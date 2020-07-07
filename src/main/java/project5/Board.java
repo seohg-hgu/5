@@ -1,5 +1,7 @@
 package project5;
 
+
+import java.applet.AudioClip;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics;
@@ -9,25 +11,33 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
+import java.io.File;
 import java.util.ArrayList;
 
 import javax.swing.Timer;
+import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.Clip;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
-public class Board extends JPanel implements MouseListener , MouseMotionListener{
 
-	Board(){
+
+public class Board extends JPanel implements MouseListener , MouseMotionListener{
+  
+	AudioInputStream inAudio;
+	Clip clip1;
+	
+	public Board(){
 		this.addMouseListener(this);
 		this.addMouseMotionListener(this);
 		//repaint();
-		
 		repaint();
 	}
 	
-	
+
 	public void paintComponent(Graphics g) {
 		Color brown = new Color(204,153,051);
 		g.setColor(brown);
@@ -78,6 +88,7 @@ public class Board extends JPanel implements MouseListener , MouseMotionListener
 		// TODO Auto-generated method stub
 		
 	}
+	
 
 	@Override
 	public void mousePressed(MouseEvent e) {
@@ -87,6 +98,7 @@ public class Board extends JPanel implements MouseListener , MouseMotionListener
 				if((e.getPoint().x>=0+25*i&&e.getPoint().x<=25*i+20)&&(e.getPoint().y>=25*j&&e.getPoint().y<=25*j+20)) {
 					if(Main.bwr[i][j]==0) {
 						Main.bwr[i][j]=1;
+						Sounds();
 						Point t= new Point();
 						t.x=i; 
 						t.y=j;
@@ -139,7 +151,13 @@ public class Board extends JPanel implements MouseListener , MouseMotionListener
 							//Main.count++;
 						}
 						repaint();
-						if(Main.count>=6) {
+						if(Main.count==7) {
+							Main.timer.stop();
+							Main.tMax=15;
+							Main.tCount=0;
+							Main.timer.restart();
+						}
+						if(Main.count>=8) {
 							if(Main.count%4==0||Main.count%4==2) {
 								Main.timer.stop();
 								Main.tMax=15;
@@ -152,9 +170,6 @@ public class Board extends JPanel implements MouseListener , MouseMotionListener
 					
 				}
 			}
-			//g.setColor(Color.black);
-			//g.drawLine(10,10+25*i,460, 10+25*i);
-			//g.drawLine(10+25*i, 10,10+25*i, 460);
 		}
 		System.out.println(e.getPoint().x+" " +e.getPoint().y);
 	}
@@ -273,7 +288,19 @@ public class Board extends JPanel implements MouseListener , MouseMotionListener
 	void quit() {
 		Main.startpanel.setVisible(true);
 		Main.btnPlusTime.setVisible(false);
+		Main.btnBack.setVisible(false);
 		
+	}
+	
+	public void Sounds() {
+		try {
+			inAudio= AudioSystem.getAudioInputStream(new File("D:\\효과음\\1.wav"));
+			clip1=AudioSystem.getClip();
+			clip1.open(inAudio);
+			clip1.start();
+		}catch(Exception e1){
+			e1.printStackTrace();
+		}
 	}
 	
 	
