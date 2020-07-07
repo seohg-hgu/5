@@ -304,7 +304,6 @@ public class Board extends JPanel implements MouseListener , MouseMotionListener
 	@Override
 	public void mouseExited(MouseEvent e) {
 		// TODO Auto-generated method stub
-		//System.out.println(e.getPoint().x+" " +e.getPoint().y);
 	}
 	
 }
