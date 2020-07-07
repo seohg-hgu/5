@@ -1,24 +1,16 @@
 package project5;
 
-import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.EventQueue;
-import java.awt.Graphics;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 import java.util.ArrayList;
-
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.Timer;
 import javax.swing.border.EmptyBorder;
-
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.widgets.Event;
-import org.eclipse.swt.widgets.Listener;
-
 import javax.swing.JLabel;
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
@@ -26,16 +18,15 @@ import javax.sound.sampled.Clip;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import java.awt.Font;
-import javax.swing.SwingConstants;
 
 public class Main extends JFrame implements ActionListener{
 
 	private JPanel contentPane; //기본 패널
-	static JPanel startpanel;//시작화면 패널
+	static JPanel startpanel; //시작화면 패널
 	static JButton btnPlusTime; //시간 추가 버튼
 	static JButton btnBack; //되돌라가 버튼
 	static String MODE=""; //?
-	static String stoneColor="";  //?
+	static String stoneColor=""; //?
 	static int count=0; //기본 count
 	static int tCount=0; // 시간 count
 	static int tMax=15; //시간 추가
@@ -98,7 +89,7 @@ public class Main extends JFrame implements ActionListener{
 		startBackground.setBounds(0, 0, 850, 515);
 		startpanel.setVisible(true);
 		
-		JButton btnStart = new JButton("Start");
+		JButton btnStart = new JButton("START");
 		btnStart.setForeground(Color.DARK_GRAY);
 		btnStart.setFont(new Font("Segoe UI", Font.BOLD, 19));
 		btnStart.setBounds(370, 220, 120, 60);
@@ -135,15 +126,9 @@ public class Main extends JFrame implements ActionListener{
 		timer = new Timer(1000,new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				//int tmp=count;
-				tCount++;
-				// TODO Auto-generated method stub
-				
+				tCount++;				
 				System.out.println(tCount);
-				Main.timerNumber.setText(String.valueOf(tMax-tCount));
-				//timerNumber.setText("");
-				//repaint();
-				
+				Main.timerNumber.setText(String.valueOf(tMax-tCount));	
 				
 				if(tCount==tMax) {
 					System.out.println(count);
@@ -169,10 +154,7 @@ public class Main extends JFrame implements ActionListener{
 				
 			}
 		});
-		
-
-		
-		
+				
 		JLabel lableTimer = new JLabel("TIMER");
 		lableTimer.setForeground(Color.BLACK);
 		lableTimer.setBounds(492, 77, 100, 50);
@@ -181,32 +163,33 @@ public class Main extends JFrame implements ActionListener{
 		lableTimer.setBackground(Color.DARK_GRAY);
 		
 		bLabel = new JLabel("BLACK");
-		bLabel.setIcon(new ImageIcon("C:\\Users\\shk98\\Desktop\\레드1.jpg"));
+		bLabel.setIcon(new ImageIcon("D:\\배경\\레드1.jpg"));
 		bLabel.setBackground(Color.BLACK);
 		bLabel.setBounds(492, 130, 100, 150);
 		contentPane.add(bLabel);
 		
 		wLabel = new JLabel("WHITE");
-		wLabel.setIcon(new ImageIcon("C:\\Users\\shk98\\Desktop\\옐로우1.jpg"));
+		wLabel.setIcon(new ImageIcon("D:\\배경\\옐로우1.jpg"));
 		wLabel.setForeground(Color.WHITE);
 		wLabel.setBackground(Color.BLACK);
 		wLabel.setBounds(600, 130, 90, 140);
 		contentPane.add(wLabel);
 		
 		btnPlusTime = new JButton("");
-		btnPlusTime.setIcon(new ImageIcon("C:\\Users\\shk98\\Desktop\\2.png"));
+		btnPlusTime.setIcon(new ImageIcon("D:\\배경\\2.png"));
 		btnPlusTime.setForeground(Color.WHITE);
 		btnPlusTime.setBackground(Color.WHITE);
 		btnPlusTime.setBounds(492, 17, 100, 50);
+		btnPlusTime.setVisible(false);
 		contentPane.add(btnPlusTime);
 		
 		btnBack = new JButton("");
-		btnBack.setIcon(new ImageIcon("C:\\Users\\shk98\\Desktop\\되돌리기.jpg"));
+		btnBack.setIcon(new ImageIcon("D:\\배경\\되돌리기.jpg"));
 		btnBack.setForeground(Color.BLACK);
 		btnBack.setBackground(Color.WHITE);
 		btnBack.setBounds(600, 17, 100, 50);
+		btnBack.setVisible(false);
 		contentPane.add(btnBack);
-		
 		
 		//게임화면 버튼
 		btnPlusTime.addActionListener(new ActionListener() {

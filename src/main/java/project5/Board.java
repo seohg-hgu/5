@@ -1,29 +1,17 @@
 package project5;
 
-
-import java.applet.AudioClip;
 import java.awt.Color;
-import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Point;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.io.File;
-import java.util.ArrayList;
-
-import javax.swing.Timer;
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
-import javax.swing.ImageIcon;
-import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-
-
 
 public class Board extends JPanel implements MouseListener , MouseMotionListener{
   
@@ -36,7 +24,6 @@ public class Board extends JPanel implements MouseListener , MouseMotionListener
 		//repaint();
 		repaint();
 	}
-	
 
 	public void paintComponent(Graphics g) {
 		Color brown = new Color(204,153,051);
@@ -52,8 +39,7 @@ public class Board extends JPanel implements MouseListener , MouseMotionListener
 			for(int j=0;j<3;j++) {
 				g.fillOval(82+150*i, 82+150*j,6,6);
 			}
-		}
-		
+		}	
 
 		for(Point t: Main.bwList) {
 			if(Main.r[t.x][t.y]==1) {
@@ -67,8 +53,6 @@ public class Board extends JPanel implements MouseListener , MouseMotionListener
 			}
 			g.fillOval(25*t.x, 25*t.y,20,20);
 		}
-		
-		//timer.stop();
 	}
 
 	@Override
@@ -285,6 +269,7 @@ public class Board extends JPanel implements MouseListener , MouseMotionListener
 		Main.timer.stop();
 		Main.timerNumber.setText("0");
 	}
+	
 	void quit() {
 		Main.startpanel.setVisible(true);
 		Main.btnPlusTime.setVisible(false);
@@ -294,7 +279,7 @@ public class Board extends JPanel implements MouseListener , MouseMotionListener
 	
 	public void Sounds() {
 		try {
-			inAudio= AudioSystem.getAudioInputStream(new File("D:\\효과음\\1.wav"));
+			inAudio= AudioSystem.getAudioInputStream(new File("D:\\효과음\\123.wav"));
 			clip1=AudioSystem.getClip();
 			clip1.open(inAudio);
 			clip1.start();
