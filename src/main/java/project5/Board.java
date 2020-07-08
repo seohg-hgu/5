@@ -14,8 +14,6 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
 public class Board extends JPanel implements MouseListener, MouseMotionListener {
-	int a = 0;
-	int b = 0;
 	Point aa;
 	
 	AudioInputStream inAudio;
@@ -445,6 +443,7 @@ public class Board extends JPanel implements MouseListener, MouseMotionListener 
 				Main.w[i][j] = 0;
 				Main.r[i][j] = 0;
 				Main.bwr[i][j] = 0;
+				resultArr[i][j]=0;
 			}
 		}
 		Main.bwList.clear();
@@ -718,14 +717,14 @@ public class Board extends JPanel implements MouseListener, MouseMotionListener 
 				}
 				else if (Main.bwr[x][y] == 0 && countConsecutive > 0) { // 연속점이 빈곳을 만나서 끝났을 경우
 					openEnds++;
-					score += connect6ShapeScore(countConsecutive, openEnds, 1); // currentTurn is black
+					score += connect6ShapeScore(countConsecutive, openEnds, 0); // currentTurn is black
 					resultArr[x][y]+=score;
 					countConsecutive = 0;
 					openEnds = 1;
 				} else if (Main.bwr[x][y] == 0) // 빈 점이 그냥 등장할 경우
 					openEnds = 1;
 				else if (countConsecutive > 0) { // 연속점이 다른 돌에 만나서 끝났을 경우
-					score+= connect6ShapeScore(countConsecutive, openEnds, 1); // currentTurn is black
+					score+= connect6ShapeScore(countConsecutive, openEnds, 0); // currentTurn is black
 					resultArr[x][y]+=score;
 					countConsecutive = 0;
 					openEnds = 0;
@@ -768,14 +767,14 @@ public class Board extends JPanel implements MouseListener, MouseMotionListener 
 				}
 				else if (Main.bwr[x][y] == 0 && countConsecutive > 0) { // 연속점이 다른 돌에 만나서 끝났을 경우
 					openEnds++;
-					score += connect6ShapeScore(countConsecutive, openEnds, 1); // currentTurn is black
+					score += connect6ShapeScore(countConsecutive, openEnds, 0); // currentTurn is black
 					resultArr[x][y]+=score;
 					countConsecutive = 0;
 					openEnds = 1;
 				} else if (Main.bwr[x][y] == 0) // 빈 점이 그냥 등장할 경우
 					openEnds = 1;
 				else if (countConsecutive > 0) { // 연속점이 다른 돌에 만나서 끝났을 경우
-					score+= connect6ShapeScore(countConsecutive, openEnds, 1); // currentTurn is black
+					score+= connect6ShapeScore(countConsecutive, openEnds, 0); // currentTurn is black
 					resultArr[x][y]+=score;
 					countConsecutive = 0;
 					openEnds = 0;
@@ -783,7 +782,7 @@ public class Board extends JPanel implements MouseListener, MouseMotionListener 
 					openEnds = 0;
 			}
 			if (countConsecutive > 0) // 연속점이 벽에 만나서 끝났을 경우
-				score += connect6ShapeScore(countConsecutive, openEnds, 1); // currentTurn is black
+				score += connect6ShapeScore(countConsecutive, openEnds, 0); // currentTurn is black
 			//resultArr[x][y]+=score;
 			countConsecutive = 0;
 			openEnds = 0;
@@ -807,14 +806,14 @@ public class Board extends JPanel implements MouseListener, MouseMotionListener 
 				}
 				else if (Main.bwr[x][y] == 0 && countConsecutive > 0) { // 연속점이 다른 돌에 만나서 끝났을 경우
 					openEnds++;
-					score += connect6ShapeScore(countConsecutive, openEnds, 1); // currentTurn is black
+					score += connect6ShapeScore(countConsecutive, openEnds, 0); // currentTurn is black
 					resultArr[x][y]+=score;
 					countConsecutive = 0;
 					openEnds = 1;
 				} else if (Main.bwr[x][y] == 0) // 빈 점이 그냥 등장할 경우
 					openEnds = 1;
 				else if (countConsecutive > 0) { // 연속점이 다른 돌에 만나서 끝났을 경우
-					score+= connect6ShapeScore(countConsecutive, openEnds, 1); // currentTurn is black
+					score+= connect6ShapeScore(countConsecutive, openEnds, 0); // currentTurn is black
 					resultArr[x][y]+=score;
 					countConsecutive = 0;
 					openEnds = 0;
@@ -822,7 +821,7 @@ public class Board extends JPanel implements MouseListener, MouseMotionListener 
 					openEnds = 0;
 			}
 			if (countConsecutive > 0) // 연속점이 벽에 만나서 끝났을 경우
-				score += connect6ShapeScore(countConsecutive, openEnds, 1); // currentTurn is black
+				score += connect6ShapeScore(countConsecutive, openEnds,0); // currentTurn is black
 			//resultArr[x][y]+=score;
 			countConsecutive = 0;
 			openEnds = 0;
@@ -864,7 +863,7 @@ public class Board extends JPanel implements MouseListener, MouseMotionListener 
 				}
 				else if (Main.bwr[a][i] == 0 && countConsecutive > 0) { // 비어있을 경우 연속된 돌이 있을 때,
 					openEnds++;
-					score += connect6ShapeScore(countConsecutive, openEnds, 0); // currentTurn is black
+					score += connect6ShapeScore(countConsecutive, openEnds, 1); // currentTurn is black
 					resultArr[a][i]+=score;
 					countConsecutive = 0;
 					openEnds = 1;
@@ -877,7 +876,7 @@ public class Board extends JPanel implements MouseListener, MouseMotionListener 
 					 */
 					//countConsecutive = 0;
 					//openEnds = 0;
-					score += connect6ShapeScore(countConsecutive, openEnds, 0); // currentTurn is black
+					score += connect6ShapeScore(countConsecutive, openEnds, 1); // currentTurn is black
 					resultArr[a][i]+=score;
 					countConsecutive = 0;
 					openEnds = 0;
@@ -901,7 +900,7 @@ public class Board extends JPanel implements MouseListener, MouseMotionListener 
 				}
 				else if (Main.bwr[a][i] == 0 && countConsecutive > 0) { // 비어있을 경우 연속된 돌이 있을 때,
 					openEnds++;
-					score += connect6ShapeScore(countConsecutive, openEnds, 0); // currentTurn is black
+					score += connect6ShapeScore(countConsecutive, openEnds, 1); // currentTurn is black
 					resultArr[a][i]+=score;
 					countConsecutive = 0;
 					openEnds = 1;
@@ -914,7 +913,7 @@ public class Board extends JPanel implements MouseListener, MouseMotionListener 
 					 */
 					//countConsecutive = 0;
 					//openEnds = 0;
-					score += connect6ShapeScore(countConsecutive, openEnds, 0); // currentTurn is black
+					score += connect6ShapeScore(countConsecutive, openEnds, 1); // currentTurn is black
 					resultArr[a][i]+=score;
 					countConsecutive = 0;
 					openEnds = 0;
@@ -946,7 +945,7 @@ public class Board extends JPanel implements MouseListener, MouseMotionListener 
 				}
 				else if (Main.bwr[a][i] == 0 && countConsecutive > 0) {
 					openEnds++;
-					score += connect6ShapeScore(countConsecutive, openEnds, 0); // currentTurn is black
+					score += connect6ShapeScore(countConsecutive, openEnds, 1); // currentTurn is black
 					resultArr[a][i]+=score;
 					countConsecutive = 0;
 					openEnds = 1;
@@ -959,7 +958,7 @@ public class Board extends JPanel implements MouseListener, MouseMotionListener 
 					 */
 					//countConsecutive = 0;
 					//openEnds = 0;
-					score += connect6ShapeScore(countConsecutive, openEnds, 0); // currentTurn is black
+					score += connect6ShapeScore(countConsecutive, openEnds, 1); // currentTurn is black
 					resultArr[a][i]+=score;
 					countConsecutive = 0;
 					openEnds = 0;
@@ -981,7 +980,7 @@ public class Board extends JPanel implements MouseListener, MouseMotionListener 
 				}
 				else if (Main.bwr[a][i] == 0 && countConsecutive > 0) {
 					openEnds++;
-					score += connect6ShapeScore(countConsecutive, openEnds, 0); // currentTurn is black
+					score += connect6ShapeScore(countConsecutive, openEnds, 1); // currentTurn is black
 					resultArr[a][i]+=score;
 					countConsecutive = 0;
 					openEnds = 1;
@@ -994,7 +993,7 @@ public class Board extends JPanel implements MouseListener, MouseMotionListener 
 					 */
 					//countConsecutive = 0;
 					//openEnds = 0;
-					score += connect6ShapeScore(countConsecutive, openEnds, 0); // currentTurn is black
+					score += connect6ShapeScore(countConsecutive, openEnds, 1); // currentTurn is black
 					resultArr[a][i]+=score;
 					countConsecutive = 0;
 					openEnds = 0;
