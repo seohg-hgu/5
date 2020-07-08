@@ -15,19 +15,27 @@ import javax.swing.JLabel;
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
+import javax.swing.ButtonGroup;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import java.awt.Font;
+import javax.swing.JRadioButton;
+import javax.swing.JCheckBox;
 
 public class Main extends JFrame implements ActionListener{
 
+	public static final int BLACK=0;
+	public static final int WHITE=1;
 	private JPanel contentPane; //기본 패널
 	static JPanel startpanel; //시작화면 패널
 	static JButton btnPlusTime; //시간 추가 버튼
+	static JButton btnGStart;//세팅 후 게임 시작버튼
 	static JButton btnBack; //되돌라가 버튼
 	static String MODE=""; //?
 	static String stoneColor=""; //?
 	static int count=0; //기본 count
+	static int rCount=0; //적돌 count
+	static boolean setting=true;
 	static int tCount=0; // 시간 count
 	static int tMax=15; //시간 추가
 	static Board board; //바둑판 패널
@@ -35,6 +43,10 @@ public class Main extends JFrame implements ActionListener{
 	static Timer timer; //타이머
 	static JLabel bLabel; 
 	static JLabel wLabel;
+	static char type=' ';
+	static int user;
+	JRadioButton selectB;    
+	JRadioButton selectW;
 	static int[][] b = new int[19][19];
 	static int[][] w = new int[19][19];
 	static int[][] r = new int[19][19];
@@ -95,7 +107,22 @@ public class Main extends JFrame implements ActionListener{
 		btnStart.setBounds(370, 220, 120, 60);
 		startBackground.add(btnStart);
 		
+		
+		ButtonGroup bg=new ButtonGroup();  
+		selectB=new JRadioButton("흑");
+		selectB.setText("흑");
+		selectB.setBounds(120,110,100,50);
+		selectW=new JRadioButton("백");
+		selectW.setBounds(230,110,100,50);
+		selectW.setText("백");
+		bg.add(selectB);
+		bg.add(selectW); 
+		
 		contentPane.add(startpanel);
+		startBackground.add(selectB);
+		startBackground.add(selectW);
+		
+		
 		startpanel.add(startBackground);
 		//시작화면 버튼
 		btnStart.addActionListener(new ActionListener() {
@@ -104,12 +131,18 @@ public class Main extends JFrame implements ActionListener{
 				// TODO Auto-generated method stub	
 				if(e.getSource()==btnStart) {
 					MODE="GAME";
+					setting =true;
+					if(selectB.isSelected()) {
+						user=BLACK;
+					}else {
+						user=WHITE;
+						//board.comBlack();
+					}
 					startpanel.setVisible(false);
 					board.setVisible(true);
 					btnPlusTime.setVisible(true);
 					btnBack.setVisible(true);
 					Sounds2();
-					//board.timer.restart();
 				}
 			}	
 		});
@@ -127,7 +160,7 @@ public class Main extends JFrame implements ActionListener{
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				tCount++;				
-				System.out.println(tCount);
+				//System.out.println(tCount);
 				Main.timerNumber.setText(String.valueOf(tMax-tCount));	
 				
 				if(tCount==tMax) {
@@ -191,6 +224,12 @@ public class Main extends JFrame implements ActionListener{
 		btnBack.setVisible(false);
 		contentPane.add(btnBack);
 		
+		btnGStart = new JButton("Start");
+		btnGStart.setBounds(712, 17, 100, 50);
+		contentPane.add(btnGStart);
+		
+		
+		
 		//게임화면 버튼
 		btnPlusTime.addActionListener(new ActionListener() {
 			@Override
@@ -199,7 +238,6 @@ public class Main extends JFrame implements ActionListener{
 				if(e.getSource()==btnPlusTime) {
 					MODE="GAME";
 					tMax+=5;
-					//board.timer.restart();
 				}
 			}	
 		});
@@ -224,6 +262,15 @@ public class Main extends JFrame implements ActionListener{
 				}
 			}	
 		});		
+		btnGStart.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// TODO Auto-generated method stub	
+				if(e.getSource()==btnGStart) {
+					setting=false;
+				}
+			}	
+		});	
 	}
 	
 	public void Sounds2() {
