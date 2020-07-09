@@ -37,7 +37,7 @@ public class Main extends JFrame implements ActionListener{
 	static int rCount=0; //적돌 count
 	static boolean setting=true;
 	static int tCount=0; // 시간 count
-	static int tMax=15; //시간 추가
+	static int tMax=50;//시간 추가
 	static Board board; //바둑판 패널
 	static JLabel timerNumber; //타이머 남은 시간 
 	static Timer timer; //타이머
@@ -156,7 +156,7 @@ public class Main extends JFrame implements ActionListener{
 		timerNumber.setBackground(Color.white);
 		contentPane.add(timerNumber);
 		
-		timer = new Timer(1000,new ActionListener() {
+		/*timer = new Timer(1000,new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				tCount++;				
@@ -186,7 +186,7 @@ public class Main extends JFrame implements ActionListener{
 				}
 				
 			}
-		});
+		});*/
 				
 		JLabel lableTimer = new JLabel("TIMER");
 		lableTimer.setForeground(Color.BLACK);
