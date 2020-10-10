@@ -87,89 +87,104 @@ public class Board extends JPanel implements MouseListener, MouseMotionListener 
 				if ((e.getPoint().x >= 0 + 25 * i && e.getPoint().x <= 25 * i + 20)
 						&& (e.getPoint().y >= 25 * j && e.getPoint().y <= 25 * j + 20)) {
 					if (Main.bwr[i][j] == 0) {
+						//착수
 						Main.bwr[i][j] = 1;
 						Sounds();
 						Point t = new Point();
 						t.x = i;
 						t.y = j;
 						Main.bwList.add(t);
-						if (Main.setting == true) {
+						
+						
+						if (Main.setting == true) { //적돌 착수 
+							//적돌 착수 (setting)
 							Main.wLabel.setVisible(true);
 							Main.bLabel.setVisible(true);
 							Main.type = 'r';
 							Main.r[i][j] = 1;
-
-							// Main.rCount++;
-						} else {
-
-							if (Main.user == Main.BLACK) {
+							
+						} else { //흑&백돌 착수 
+							
+							if (Main.user == Main.BLACK) { // user == black && computer == white 
 								if (Main.count == 0) {
 									Main.wLabel.setVisible(false);
 									Main.bLabel.setVisible(true);
+									
+									//black turn (user turn)
 									Main.user = Main.BLACK;
 									Main.b[i][j] = 1;
-									//System.out.println(i+" "+j);
-									// Main.count++;
-									// 백돌 그리기
+									Main.count++; //흑돌1개 착수
+									System.out.println("흑돌 1개 착수 후 "+ Main.count);
+									
+									
+									// 백돌 그리기 : White turn (computer turn)  백돌 2개 착수 
 									compareBlackFirst();
 									comWhite();
 									repaint();
 									compareBlackFirst();
 									comWhite();
-									System.out.println(Main.count+": "+aa.x+" : "+aa.y);
 									repaint();
-									Main.count++;
+									System.out.println("백돌 2개 착수 후 "+ Main.count);
+									
+									//Main.count++;
 									Main.user = Main.BLACK;
+									
 								} else if (Main.count % 4 == 0 || Main.count % 4 == 3) {
-									// BLACK
-									compareBlack();
+									// BLACK turn (user turn)
+									//compareBlack();<- 왜 있는지 모르겠음
+									
 									Main.wLabel.setVisible(false);
 									Main.bLabel.setVisible(true);
 									Main.user = Main.BLACK;
-									Main.b[i][j] = 1;
-									//System.out.println(i+" "+j);
+									Main.b[i][j] = 1; //흑돌1개 착수
 									repaint();
-									if (Main.count % 4 == 0) {
+									
+									if (Main.count % 4 == 0) {//b->w로 turn 넘어갈 떄, 
+										Main.count++; 
+										System.out.println("b->w로 turn 넘어갈 떄, "+ Main.count);
 										//백돌 출력
+										Main.user = Main.WHITE;
 										p=true;
-										compareBlack();
-										if(p==false) {
-											compareWhite();
+										compareWhite2(); //6개가 되는 백돌이 있는지 확인-> 순서 바뀜 
+										if(p==false) { //공격하지 않을 경우 
+											compareBlack2(); //흑돌 위치 확인
 										}
 										comWhite();
 										repaint();
+										
+										Main.user = Main.WHITE;
 										p=true;
-										compareBlack();
+										compareWhite2();
 										if(p==false) {
-											compareWhite();
+											compareBlack2();
 										}
 										comWhite();
 										repaint();
 									
-										Main.count++;
+										//Main.count++;
+										System.out.println("b->w로 turn 넘어갈 떄,백돌 2개 착수 후  "+ Main.count);
 										Main.user = Main.BLACK;
-									} else if (Main.count % 4 == 3) {
-										// System.out.println("HI3");
-										Main.user = Main.BLACK;
-										//카운트 증가
+										
+									} else if (Main.count % 4 == 3) {//b->b
 										Main.count++;
+										System.out.println("b->b"+Main.count);
 									}
-									
-									  if(winCheck(Main.b,i,j)) { 
-										  repaint(); 
-										  Object[] options = {"재시작", "종료"}; 
-										  int n= JOptionPane.showOptionDialog(Main.board,"BLACK WIN!","",JOptionPane.YES_NO_OPTION,JOptionPane.QUESTION_MESSAGE,null,options, options[0]);
-										  if(n==0) { 
-											  Main.setting=false; 
-											  clearArr();//배열 클리어하기
-										  }else {
-											  Main.setting=false; 
-											  clearArr();//배열 클리어하기
-											  quit(); 
-										  }
+									 if(winCheck(Main.b,i,j)) { 
+										repaint();
+										Object[] options = { "재시작", "종료" };
+										int n = JOptionPane.showOptionDialog(Main.board, "BLACK WIN!", "",
+												JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null,
+												options, options[0]);
+										if (n == 0) {
+											Main.setting = false;
+											clearArr();// 배열 클리어하기
+										} else {
+											Main.setting = false;
+											clearArr();// 배열 클리어하기
+											quit();
+										}
 									 
 									  }
-									 
 								}
 								repaint();
 								//for timer
@@ -227,11 +242,12 @@ public class Board extends JPanel implements MouseListener, MouseMotionListener 
 									comBlack();
 									repaint();
 									p=true;
-									compareWhite2();
+									compareWhite2();  //compareBlack() 함수 사용
 									if(p==false) {
-										compareBlack2();
+										compareBlack2(); //compareWhite() 함수 사용
 									}
 									comBlack();
+									
 									repaint();
 									Main.count++;
 									Main.user = Main.WHITE;
@@ -290,6 +306,7 @@ public class Board extends JPanel implements MouseListener, MouseMotionListener 
 	public void comWhite() {
 		Main.wLabel.setVisible(true);
 		Main.bLabel.setVisible(false);
+		
 		Main.user = Main.WHITE;
 		Main.w[aa.x][aa.y] = 1;
 		Main.bwr[aa.x][aa.y] = 1;
@@ -297,8 +314,10 @@ public class Board extends JPanel implements MouseListener, MouseMotionListener 
 		t.x =aa.x;
 		t.y =aa.y;
 		Main.bwList.add(t);
+		
 		Sounds();
 		Main.count++;
+	
 		if (winCheck(Main.w, aa.x, aa.y)) {
 			repaint();
 			Object[] options = { "재시작", "종료" };
@@ -502,7 +521,7 @@ public class Board extends JPanel implements MouseListener, MouseMotionListener 
 
 	
 	//가중치
-	public double connect6ShapeScore(int consecutive, int openEnds, int currentTurn) { // shape에 따른 가중치 부여
+	/*public double connect6ShapeScore(int consecutive, int openEnds, int currentTurn) { // shape에 따른 가중치 부여
 		if (openEnds == 0 && consecutive <= 6)
 			return 0;
 		switch (consecutive) {
@@ -510,36 +529,39 @@ public class Board extends JPanel implements MouseListener, MouseMotionListener 
 			switch (openEnds) {
 			case 2:
 				if (currentTurn == Main.user) { // this.currentTurn
-					return 1000000;
+					return 200000000; //공격
 				}
 				return 50;
 			}
+			
 		case 5:
 			switch (openEnds) {
 			case 1:
 				if (currentTurn == Main.user) { // this.currentTurn
-					return 1000000;
+					return 200000000; //공격
 				}
-					
 				return 50;
+				
 			case 2:
 				if (currentTurn == Main.user)
-					return 1000000;
-				return 50000;
+					return 1000000; //공격
+				return 500000;
 			}
+			
 		case 4:
 			switch (openEnds) {
 			case 1:
 				if (currentTurn == Main.user){ // this.currentTurn				
-					return 1000000;
+					return 200000000; //공격
 				}
 				return 50;
 			case 2:
 				if (currentTurn == Main.user){ // this.currentTurn
-					return 1000000;
+					return 200000000; //공격
 				}
-				return 50000;
+				return 500000;
 			}
+			
 		case 3:
 			switch (openEnds) {
 			case 1:
@@ -548,9 +570,10 @@ public class Board extends JPanel implements MouseListener, MouseMotionListener 
 				return 5;
 			case 2:
 				if (currentTurn == Main.user)
-					return 100;
-				
+					return 10000;
+				return 50;	
 			}
+			
 		case 2:
 			switch (openEnds) {
 			case 1:
@@ -558,6 +581,7 @@ public class Board extends JPanel implements MouseListener, MouseMotionListener 
 			case 2:
 				return 5;
 			}
+			
 		case 1:
 			switch (openEnds) {
 			case 1:
@@ -565,72 +589,176 @@ public class Board extends JPanel implements MouseListener, MouseMotionListener 
 			case 2:
 				return 1;
 			}
+			
 		default:
-			return 2000000; // 우승!
+			return 0; // default
 		}
 	}
-
-	
+*/
+	//가중치
+		public double connect6ShapeScoreBlack(int consecutive, int openEnds, int con) { // shape에 따른 가중치 부여
+			if (openEnds == 0 && consecutive <= 6)
+				return 0;
+			switch (consecutive) {
+			case 6: 
+				switch (openEnds) {
+				case 2:
+					if (Main.count%4==2||Main.count%4==1) { // this.currentTurn
+						return 200000000; //공격
+					}
+					return 50;
+				}
+				
+			case 5:
+				switch (openEnds) {
+				case 1:
+					if (Main.count%4==2||Main.count%4==1) { // this.currentTurn
+						return 200000000; //공격
+					}
+					return 100000000; //공격
+					
+				case 2:
+					if (Main.count%4==2||Main.count%4==1)
+						return 200000000; //공격
+					return 100000000; //공격
+				}
+				
+			case 4:
+				switch (openEnds) {
+				case 0: 
+					if (Main.count%4==2||Main.count%4==1)
+						return 10;
+					return 5;	
+				case 1:
+					if (Main.count%4==2||Main.count%4==1){ // this.currentTurn				
+						return 200000000; //공격
+					}
+					return 50;
+				case 2:
+					if (Main.count%4==2||Main.count%4==1){ // this.currentTurn
+						return 200000000; //공격
+					}
+					return 500000;
+				}
+				
+			case 3:
+				switch (openEnds) {
+				case 1:
+					if (Main.count%4==2||Main.count%4==1)
+						return 7;
+					return 5;
+				case 2:
+					if (Main.count%4==2||Main.count%4==1)
+						return 10000;
+					return 50;	
+				}
+				
+			case 2:
+				switch (openEnds) {
+				case 1:
+					return 2;
+				case 2:
+					return 5;
+				}
+				
+			case 1:
+				switch (openEnds) {
+				case 1:
+					return 0.5;
+				case 2:
+					return 1;
+				}
+				
+			default:
+				return 0; // default
+			}
+		}
 	//computer = white인 경우 가로 검사
-	public int[][] analyzeHorizontalSetsForBlack(int current_turn) {
-		double score = 0;
-		int countConsecutive = 0;
-		int openEnds = 0;
+	public int[][] analyzeHorizontalSetsForBlack() {
+		double score = 0; //가중치 
+		int countConsecutive = 0; //연속된 돌의 수 
+		int openEnds = 0; 
 
 		for (int i = 0; i < 19; i++) {
 			for (int a = 0; a < 19; a++) {
 				if (Main.b[a][i] == 1) { // 돌이 검정색이 되면 연속점 1증가
 					countConsecutive++;
+					if(countConsecutive==1) {
+						if((a-1>0)&&(Main.bwr[a-1][i] == 0)) {
+							openEnds=1;
+						}else {
+							openEnds=0;
+						}
+					}
+					
 					resultB[a][i]=Integer.MIN_VALUE;
 				}
+				
+				
 				else if (Main.bwr[a][i] == 0 && countConsecutive > 0) { // 비어있을 경우 연속된 돌이 있을 때,
 					openEnds++;
-					score= connect6ShapeScore(countConsecutive, openEnds, 0); // currentTurn is black
-					resultB[a][i]+=score;
+					if(a+2<19&&(openEnds==2)&&(countConsecutive==4)&&(Main.bwr[a+1][i] ==1)&&(Main.b[a+1][i] != 1)) {
+						//연속 4개 +2 위치가 다른 돌로 막혀있는 경우 
+						score= connect6ShapeScoreBlack(countConsecutive, 0, 0); // currentTurn is black
+						resultB[a][i]+=score;
+					}else {
+						score= connect6ShapeScoreBlack(countConsecutive, openEnds, 0); // currentTurn is black
+						resultB[a][i]+=score;
+					}
+					
 					
 					//한자리가 비어있고 연속된 경우
-					nCount=0;
-					tX=a+1;
-					if(tX<19) {
-						while(Main.bwr[tX][i]==1&&Main.b[tX][i]==1) {
-							nCount++;
-							tX++;
-						}
-						if((nCount+countConsecutive==5)||(nCount+countConsecutive==4)) {
-							score=connect6ShapeScore(countConsecutive+nCount, openEnds, 0); // currentTurn is black
-							resultB[a][i]+=score;
-							
-						}
-					}
-					
-					//두자리가 비어있고 연속된 경우
-					nCount=0;
-					tX=a+2;
-					if(tX<19) {
-						while((Main.bwr[a+1][i] == 0)&& Main.bwr[tX][i]==1&&Main.b[tX][i]==1) {
-							nCount++;
-							tX++;
-						}
-						if(nCount+countConsecutive==6) {
-							score=connect6ShapeScore(countConsecutive+nCount, openEnds, 0); // currentTurn is black
-							resultB[a][i]+=score;
+					if(a+1<19&&Main.bwr[a+1][i]==1&&Main.b[a+1][i]==1) {
+						nCount=0;
+						tX=a+1; //범위 설정
+						if(tX<19) {
+							while(tX<19&&Main.bwr[tX][i]==1&&Main.b[tX][i]==1) {
+								nCount++;
+								tX++;
+							}
+							if(tX+1<19&&(nCount+countConsecutive==3)&&(Main.bwr[tX][i]==0)&&(Main.bwr[tX+1][i]==1)&&(Main.b[tX+1][i]==1)) {
+								//3+0+1인 경우 
+								score=connect6ShapeScoreBlack(4, openEnds, 1); // currentTurn is black
+								resultB[a][i]+=score;	
+							}
+							if((nCount+countConsecutive==5)||(nCount+countConsecutive==4)) {
+								if((nCount+countConsecutive==4)&&Main.bwr[tX][i]==1&&Main.b[tX][i]!=1) {
+									score= connect6ShapeScoreBlack(4, 0, 0); // currentTurn is black
+									resultB[a][i]+=score;
+								}
+								score=connect6ShapeScoreBlack(countConsecutive+nCount, openEnds, 1); // currentTurn is black
+								resultB[a][i]+=score;
+							}
 						}
 					}
-					
-					
+					if((a+2<19)&&(Main.bwr[a+1][i]==0&&Main.b[a+1][i]==0)&&(Main.bwr[a+2][i]==1&&Main.b[a+2][i]==1)) {
+						//두자리가 비어있고 연속된 경우
+						nCount=0;
+						tX=a+2;
+						if(tX<19) {
+							while(tX<19&&(Main.bwr[a+1][i] == 0)&& Main.bwr[tX][i]==1&&Main.b[tX][i]==1) {
+								nCount++;
+								tX++;
+							}
+							if(nCount+countConsecutive==4) {
+								score=connect6ShapeScoreBlack(6, openEnds, 1); // currentTurn is black
+								resultB[a][i]+=score;
+							}
+						}
+					}
 					//resultB[a][i]+=score;
 					countConsecutive = 0;
 					openEnds = 1;
-				} else if (Main.bwr[a][i] == 0) // 비어있을 경우
+				} else if (Main.bwr[a][i] == 0) {// 비어있을 경우
 					openEnds = 1;
-				else if (countConsecutive > 0) {
+				} else if (countConsecutive > 0) {
 					/*
 					 * score+= connect6ShapeScore(countConsecutive, openEnds, 0); // currentTurn is
 					 * black if (score > max) { max=score; n.p.x = a; n.p.y = i; }
 					 */
 					//countConsecutive = 0;
 					//openEnds = 0;
-					score = connect6ShapeScore(countConsecutive, openEnds, 0); // currentTurn is black
+					score = connect6ShapeScoreBlack(countConsecutive, openEnds, 0); // currentTurn is black
 					resultB[a][i]+=score;
 					countConsecutive = 0;
 					openEnds = 0;
@@ -650,40 +778,57 @@ public class Board extends JPanel implements MouseListener, MouseMotionListener 
 			for (int a = 18; a >=0; a--) {
 				if (Main.b[a][i] == 1) { // 돌이 검정색이 되면 연속점 1증가
 					countConsecutive++;
+					if(countConsecutive==1) {
+						if((a+1<19)&&(Main.bwr[a+1][i] == 0)) {
+							openEnds=1;
+						}else {
+							openEnds=0;
+						}
+					}
 					resultB[a][i]=Integer.MIN_VALUE;
 				}
 				else if (Main.bwr[a][i] == 0 && countConsecutive > 0) { // 비어있을 경우 연속된 돌이 있을 때,
 					openEnds++;
-					score= connect6ShapeScore(countConsecutive, openEnds, 0); // currentTurn is black
+					score= connect6ShapeScoreBlack(countConsecutive, openEnds, 0); // currentTurn is black
 					resultB[a][i]+=score;
 					
-					nCount=0;
-					tX=a-1;
-					if(tX>0) {
-						while(Main.bwr[tX][i]==1&&Main.b[tX][i]==1) {
-							nCount++;
-							tX--;
-						}
-						if((nCount+countConsecutive==5)||(nCount+countConsecutive==4)) {
-							score=connect6ShapeScore(countConsecutive+nCount, openEnds, 0); // currentTurn is black
-							resultB[a][i]+=score;
+					
+					//한자리가 비어있고 연속된 경우
+					if(a-1>0&&Main.bwr[a-1][i]==1&&Main.b[a-1][i]==1) {
+						nCount=0;
+						tX=a-1;  //범위 설정
+						if(tX>0) {
+							while(tX>0&&Main.bwr[tX][i]==1&&Main.b[tX][i]==1) {
+								nCount++;
+								tX--;
+							}
+							if(tX-1>0&&(nCount+countConsecutive==3)&&(Main.bwr[tX][i]==0)&&(Main.bwr[tX-1][i]==1)&&(Main.b[tX-1][i]==1)) {
+								score=connect6ShapeScoreBlack(4, openEnds, 1); // currentTurn is black
+								resultB[a][i]+=score;	
+							}
+							if((nCount+countConsecutive==5)||(nCount+countConsecutive==4)) {
+								score=connect6ShapeScoreBlack(countConsecutive+nCount, openEnds, 1); // currentTurn is black
+								resultB[a][i]+=score;
+							}
 						}
 					}
 					
-					//두자리가 비어있고 연속된 경우
-					nCount=0;
-					tX=a-2;
-					if(tX>1) {
-						while((Main.bwr[a-1][i] == 0)&& Main.bwr[tX][i]==1&&Main.b[tX][i]==1) {
-							nCount++;
-							tX--;
-						}
-						if(nCount+countConsecutive==6) {
-							score=connect6ShapeScore(countConsecutive+nCount, openEnds, 0); // currentTurn is black
-							resultB[a][i]+=score;
+					
+					if(a-2>0&&(Main.bwr[a-1][i]==0&&Main.b[a-1][i]==0)&&(Main.bwr[a-2][i]==1&&Main.b[a-2][i]==1)) {
+						//두자리가 비어있고 연속된 경우
+						nCount=0;
+						tX=a-2;
+						if(tX>1) {
+							while(tX>0&&(Main.bwr[a-1][i] == 0)&& Main.bwr[tX][i]==1&&Main.b[tX][i]==1) {
+								nCount++;
+								tX--;
+							}
+							if(nCount+countConsecutive==4) {
+								score=connect6ShapeScoreBlack(6, openEnds, 1); // currentTurn is black
+								resultB[a][i]+=score;
+							}
 						}
 					}
-					
 					
 					resultB[a][i]+=score;
 					countConsecutive = 0;
@@ -697,7 +842,7 @@ public class Board extends JPanel implements MouseListener, MouseMotionListener 
 					 */
 					//countConsecutive = 0;
 					//openEnds = 0;
-					score = connect6ShapeScore(countConsecutive, openEnds, 0); // currentTurn is black
+					score = connect6ShapeScoreBlack(countConsecutive, openEnds, 0); // currentTurn is black
 					resultB[a][i]+=score;
 					countConsecutive = 0;
 					openEnds = 0;
@@ -715,8 +860,9 @@ public class Board extends JPanel implements MouseListener, MouseMotionListener 
 		
 		return Main.bwr;
 	}
+	
 	//computer = white인 경우 세로 검사
-	public int[][] analyzeVerticalSetsForBlack(int current_turn) {
+	public int[][] analyzeVerticalSetsForBlack() {
 		double score = 0;
 		int countConsecutive = 0;
 		int openEnds = 0;
@@ -725,37 +871,54 @@ public class Board extends JPanel implements MouseListener, MouseMotionListener 
 			for (int i = 0; i < 19; i++) {
 				if (Main.b[a][i] == 1) { // 돌이 검정색이 되면 연속점 1증가
 					countConsecutive++;
+					if(countConsecutive==1) {
+						if((i-1>0)&&(Main.bwr[a][i-1] == 0)) {
+							openEnds=1;
+						}else {
+							openEnds=0;
+						}
+					}
+					
 					resultB[a][i]=Integer.MIN_VALUE;
 				}
 				else if (Main.bwr[a][i] == 0 && countConsecutive > 0) {
 					openEnds++;
-					score = connect6ShapeScore(countConsecutive, openEnds, 0); // currentTurn is black
+					score = connect6ShapeScoreBlack(countConsecutive, openEnds, 0); // currentTurn is black
 					resultB[a][i]+=score;
 					
-					//한 자리가 비어있고 연속된 경우
-					nCount=0;
-					tX=i+1;
-					if(tX<19) {
-						while(Main.bwr[a][tX]==1&&Main.b[a][tX]==1) {
-							nCount++;
-							tX++;
-						}
-						if((nCount+countConsecutive==5)||(nCount+countConsecutive==4)) {
-							score=connect6ShapeScore(countConsecutive+nCount, openEnds, 0); // currentTurn is black
-							resultB[a][i]+=score;
+					//한자리가 비어있고 연속된 경우
+					if(i+1<19&&Main.bwr[a][i+1]==1&&Main.b[a][i+1]==1) {
+						nCount=0;
+						tX=i+1; //범위 설정
+						if(tX<19) {
+							while(tX<19&&Main.bwr[a][tX]==1&&Main.b[a][tX]==1) {
+								nCount++;
+								tX++;
+							}
+							if(tX+1<19&&(nCount+countConsecutive==3)&&(Main.bwr[a][tX]==0)&&(Main.bwr[a][tX+1]==1)&&(Main.b[a][tX+1]==1)) {
+								score=connect6ShapeScoreBlack(4, openEnds, 1); // currentTurn is black
+								resultB[a][i]+=score;	
+							}
+							if((nCount+countConsecutive==5)||(nCount+countConsecutive==4)) {
+								score=connect6ShapeScoreBlack(countConsecutive+nCount, openEnds, 1); // currentTurn is black
+								resultB[a][i]+=score;
+								
+							}
 						}
 					}
-					//두자리가 비어있고 연속된 경우
-					nCount=0;
-					tX=i+2;
-					if(tX<19) {
-						while((Main.bwr[a][i+1] == 0)&& Main.bwr[a][tX]==1&&Main.b[a][tX]==1) {
-							nCount++;
-							tX++;
-						}
-						if(nCount+countConsecutive==6) {
-							score=connect6ShapeScore(countConsecutive+nCount, openEnds, 0); // currentTurn is black
-							resultB[a][i]+=score;
+					if(i+2<19&&(Main.bwr[a][i+1]==0&&Main.b[a][i+1]==0)&&(Main.bwr[a][i+2]==1&&Main.b[a][i+2]==1)) {
+						//두자리가 비어있고 연속된 경우
+						nCount=0;
+						tX=i+2;
+						if(tX<19) {
+							while(tX<19&&(Main.bwr[a][i+1] == 0)&& Main.bwr[a][tX]==1&&Main.b[a][tX]==1) {
+								nCount++;
+								tX++;
+							}
+							if(nCount+countConsecutive==4) {
+								score=connect6ShapeScoreBlack(6, openEnds, 1); // currentTurn is black
+								resultB[a][i]+=score;
+							}
 						}
 					}
 					
@@ -770,7 +933,7 @@ public class Board extends JPanel implements MouseListener, MouseMotionListener 
 					 */
 					//countConsecutive = 0;
 					//openEnds = 0;
-					score = connect6ShapeScore(countConsecutive, openEnds, 0); // currentTurn is black
+					score = connect6ShapeScoreBlack(countConsecutive, openEnds, 0); // currentTurn is black
 					resultB[a][i]+=score;
 					countConsecutive = 0;
 					openEnds = 0;
@@ -788,46 +951,55 @@ public class Board extends JPanel implements MouseListener, MouseMotionListener 
 			for (int i = 18; i >=0; i--) {
 				if (Main.b[a][i] == 1) { // 돌이 검정색이 되면 연속점 1증가
 					countConsecutive++;
+					if(countConsecutive==1) {
+						if((i+1<19)&&(Main.bwr[a][i+1] == 0)) {
+							openEnds=1;
+						}else {
+							openEnds=0;
+						}
+					}
+					
 					resultB[a][i]=Integer.MIN_VALUE;
 				}
 				else if (Main.bwr[a][i] == 0 && countConsecutive > 0) {
 					openEnds++;
-					score= connect6ShapeScore(countConsecutive, openEnds, 0); // currentTurn is black
+					score= connect6ShapeScoreBlack(countConsecutive, openEnds, 0); // currentTurn is black
 					resultB[a][i]+=score;
 					
-					//한 자리가 비어있고 연속된 경우
-					nCount=0;
-					tX=i-1;
-					if(tX>0) {
-						while(Main.bwr[a][tX]==1&&Main.b[a][tX]==1) {
-							nCount++;
-							tX--;
-						}
-						if((nCount+countConsecutive==5)||(nCount+countConsecutive==4)) {
-							score=connect6ShapeScore(countConsecutive+nCount, openEnds, 0); // currentTurn is black
-							resultB[a][i]+=score;
-						}
-						/*for(int q=0;q<19;q++) {
-							for(int p=0;p<19;p++) {
-								System.out.print(resultB[p][q]+ "\t B");
+					//한자리가 비어있고 연속된 경우
+					if((i-1>0)&&Main.bwr[a][i-1]==1&&Main.b[a][i-1]==1) {
+						nCount=0;
+						tX=i-1;; //범위 설정
+						if(tX>0) {
+							while(tX>0&&Main.bwr[a][tX]==1&&Main.b[a][tX]==1) {
+								nCount++;
+								tX--;
 							}
-							System.out.println();
-						}*/
-						System.out.println();
+							if(tX-1>0&&(nCount+countConsecutive==3)&&(Main.bwr[a][tX]==0)&&(Main.bwr[a][tX-1]==1)&&(Main.b[a][tX-1]==1)) {
+								score=connect6ShapeScoreBlack(4, openEnds, 1); // currentTurn is black
+								resultB[a][i]+=score;	
+							}
+							if((nCount+countConsecutive==5)||(nCount+countConsecutive==4)) {
+								score=connect6ShapeScoreBlack(countConsecutive+nCount, openEnds, 1); // currentTurn is black
+								resultB[a][i]+=score;
+								
+							}
+						}
 					}
 					
-					//두자리가 비어있고 연속된 경우
-					nCount=0;
-					tX=i-2;
-					if(tX>1) {
-						while((Main.bwr[a][i-1] == 0)&& Main.bwr[a][tX]==1&&Main.b[a][tX]==1) {
-							nCount++;
-							tX--;
-						}
-						if(nCount+countConsecutive==6) {
-							score=connect6ShapeScore(countConsecutive+nCount, openEnds, 0); // currentTurn is black
-							resultB[a][i]+=score;
-						}
+					if((i-2>0)&&(Main.bwr[a][i-1]==0&&Main.b[a][i-1]==0)&&(Main.bwr[a][i-2]==1&&Main.b[a][i-2]==1)) {
+						//두자리가 비어있고 연속된 경우
+						nCount=0;
+						tX=i-2;
+						if(tX>1) 
+							while(tX>0&&(Main.bwr[a][i-1] == 0)&& Main.bwr[a][tX]==1&&Main.b[a][tX]==1) {
+								nCount++;
+								tX--;
+							}
+							if(nCount+countConsecutive==6) {
+								score=connect6ShapeScoreBlack(6, openEnds, 1); // currentTurn is black
+								resultB[a][i]+=score;
+							}
 					}
 					
 					countConsecutive = 0;
@@ -841,7 +1013,7 @@ public class Board extends JPanel implements MouseListener, MouseMotionListener 
 					 */
 					//countConsecutive = 0;
 					//openEnds = 0;
-					score = connect6ShapeScore(countConsecutive, openEnds, 0); // currentTurn is black
+					score = connect6ShapeScoreBlack(countConsecutive, openEnds, 0); // currentTurn is black
 					resultB[a][i]+=score;
 					countConsecutive = 0;
 					openEnds = 0;
@@ -860,42 +1032,92 @@ public class Board extends JPanel implements MouseListener, MouseMotionListener 
 	}
 	
 	//computer = white인 경우 대각선 검사
-	public int[][] analyzeRightDiagonalSetsForBlack(int current_turn) {
+	public int[][] analyzeRightDiagonalSetsForBlack() {
 		double score = 0;
 		int countConsecutive = 0;
 		int openEnds = 0;
-		int n = 19;
+		
 		//left bottom to right
-		for (int i = 0; i <= 2 * n - 2; i++) {
+		for (int i = 0; i <= 2 * 19 - 2; i++) {
 			int lb, ub;
 			if (19<= i)
-				lb = -(2 * n - 2 - i);
+				lb = -(2 * 19 - 2 - i);
 			else
 				lb = -i;
 			ub = -lb;
 
 			for (int diff = lb; diff <= ub; diff += 2) {
+				//x, y 좌표 이용
 				int x = (i + diff) >> 1;//(i+diff)/2;
 				int y = i - x;
+				
 				//System.out.println("a "+a+" i "+i);
 				if (Main.b[x][y] == 1) { // 돌이 검정색이 되면 연속점 1증가
 					countConsecutive++;
+					if(countConsecutive==1) {
+						if((x-1>0)&&(y+1<19)&&(Main.bwr[x-1][y+1] == 0)) {
+							openEnds=1;
+						}else {
+							openEnds=0;
+						}
+					}
+					
 					resultB[x][y]=Integer.MIN_VALUE;
 				}
 				else if (Main.bwr[x][y] == 0 && countConsecutive > 0) { // 연속점이 빈곳을 만나서 끝났을 경우
 					openEnds++;
-					score = connect6ShapeScore(countConsecutive, openEnds, 0); // currentTurn is black		
+					score = connect6ShapeScoreBlack(countConsecutive, openEnds, 0); // currentTurn is black		
 					resultB[x][y]+=score;
+					
 					//한 자리가 비어있고 연속된 경우
-						
+					if(x+1<19&&y-1>0&&Main.bwr[x+1][y-1]==1&&Main.b[x+1][y-1]==1) {
+						nCount=0;
+						tX=x+1; //범위 설정
+						tY=y-1;
+						int end=(i + ub) >> 1;
+						if(tX<end) {
+							while(tX<19&&tY>0&&Main.bwr[tX][tY]==1&&Main.b[tX][tY]==1) {
+								nCount++;
+								tX++;
+								tY--;
+							}
+							if(tX+1<19&&tX-1>0&&(nCount+countConsecutive==3)&&(Main.bwr[tX][tY]==0)&&(Main.bwr[tX+1][tY-1]==1)&&(Main.b[tX+1][tY-1]==1)) {
+								score=connect6ShapeScoreBlack(4, openEnds, 1); // currentTurn is black
+								resultB[x][y]+=score;	
+							}
+							if((nCount+countConsecutive==5)||(nCount+countConsecutive==4)) {
+								score=connect6ShapeScoreBlack(countConsecutive+nCount, openEnds, 1); // currentTurn is black
+								resultB[x][y]+=score;
+							}
+						}
+					}	
+					
 					//두 자리가 비어있고 연속된 경우
+					if(x+2<19&&y-2>0&&(Main.bwr[x+1][y-1]==0&&Main.b[x+1][y-1]==0)&&(Main.bwr[x+2][y-2]==1&&Main.b[x+2][y-2]==1)) {
+						//두자리가 비어있고 연속된 경우
+						nCount=0;
+						tX=x+2; //범위 설정
+						tY=y-2;
+						int end=(i + ub) >> 1;
+						if(tX<end) {
+							while(tX<19&&tY>0&&(Main.bwr[x+1][y-1] == 0)&& Main.bwr[tX][tY]==1&&Main.b[tX][tY]==1) {
+								nCount++;
+								tX++;
+								tY--;
+							}
+							if(nCount+countConsecutive==4) {
+								score=connect6ShapeScoreBlack(6, openEnds, 1); // currentTurn is black
+								resultB[x][y]+=score;
+							}
+						}
+					}
 					
 					countConsecutive = 0;
 					openEnds = 1;
 				} else if (Main.bwr[x][y] == 0) // 빈 점이 그냥 등장할 경우
 					openEnds = 1;
 				else if (countConsecutive > 0) { // 연속점이 다른 돌에 만나서 끝났을 경우
-					score= connect6ShapeScore(countConsecutive, openEnds, 0); // currentTurn is black
+					score= connect6ShapeScoreBlack(countConsecutive, openEnds, 0); // currentTurn is black
 					resultB[x][y]+=score;
 					countConsecutive = 0;
 					openEnds = 0;
@@ -903,17 +1125,17 @@ public class Board extends JPanel implements MouseListener, MouseMotionListener 
 					openEnds = 0;
 			}
 			if (countConsecutive > 0) // 연속점이 벽에 만나서 끝났을 경우
-				score = connect6ShapeScore(countConsecutive, openEnds, 0); // currentTurn is black
+				score = connect6ShapeScoreBlack(countConsecutive, openEnds, 0); // currentTurn is black
 			//resultArr[x][y]+=score;
 			countConsecutive = 0;
 			openEnds = 0;
 		}
 		
-		//right bottom to left
-		for (int i = 0; i<=2*n-2; i++) {
+		//right to left bottom
+		for (int i = 0; i<=2*19-2; i++) {
 			int lb, ub;
 			if (19<= i)
-				lb = -(2 * n - 2 - i);
+				lb = -(2 * 19 - 2 - i);
 			else
 				lb = -i;
 			ub = -lb;
@@ -924,18 +1146,70 @@ public class Board extends JPanel implements MouseListener, MouseMotionListener 
 				//System.out.println("a "+a+" i "+i);
 				if (Main.b[x][y] == 1) { // 돌이 검정색이 되면 연속점 1증가
 					countConsecutive++;
+					if(countConsecutive==1) {
+						if((x+1<19)&&(y-1>0)&&(Main.bwr[x+1][y-1] == 0)) {
+							openEnds=1;
+						}else {
+							openEnds=0;
+						}
+					}
+					
 					resultB[x][y]=Integer.MIN_VALUE;
 				}
 				else if (Main.bwr[x][y] == 0 && countConsecutive > 0) { // 연속점이 빈곳을 만나서 끝났을 경우
 					openEnds++;
-					score = connect6ShapeScore(countConsecutive, openEnds, 0); // currentTurn is black
+					score = connect6ShapeScoreBlack(countConsecutive, openEnds, 0); // currentTurn is black
 					resultB[x][y]+=score;
+					
+					//한 자리가 비어있고 연속된 경우
+					if(x-1>0&&y+1<19&&Main.bwr[x-1][y+1]==1&&Main.b[x-1][y+1]==1) {
+						nCount=0;
+						tX=x-1; //범위 설정
+						tY=y+1; 
+						int end=(i + ub) >> 1;
+						if(tX<end) {
+							while(tX<19&&tY>0&&Main.bwr[tX][tY]==1&&Main.b[tX][tY]==1) {
+								nCount++;
+								tX--;
+								tY++;
+							}
+							if(tX-1>0&&tY+1<19&&(nCount+countConsecutive==3)&&(Main.bwr[tX][tY]==0)&&(Main.bwr[tX-1][tY+1]==1)&&(Main.b[tX-1][tY+1]==1)) {
+								score=connect6ShapeScoreBlack(4, openEnds, 1); // currentTurn is black
+								resultB[x][y]+=score;	
+							}
+							if((nCount+countConsecutive==5)||(nCount+countConsecutive==4)) {
+								score=connect6ShapeScoreBlack(countConsecutive+nCount, openEnds, 1); // currentTurn is black
+								resultB[x][y]+=score;
+							}
+						}
+					}	
+					
+					//두 자리가 비어있고 연속된 경우
+					if(x-2>0&&y+2<19&&(Main.bwr[x-1][y+1]==0&&Main.b[x-1][y+1]==0)&&(Main.bwr[x-2][y+2]==1&&Main.b[x-2][y+2]==1)) {
+						//두자리가 비어있고 연속된 경우
+						nCount=0;
+						tX=x-2; //범위 설정
+						tY=y+2;
+						int end=(i + ub) >> 1;
+						if(tX<end) {
+							while(tX<19&&tY>0&&(Main.bwr[x-1][y+1] == 0)&& Main.bwr[tX][tY]==1&&Main.b[tX][tY]==1) {
+								nCount++;
+								tX--;
+								tY++;
+							}
+							if(nCount+countConsecutive==4) {
+								score=connect6ShapeScoreBlack(6, openEnds, 1); // currentTurn is black
+								resultB[x][y]+=score;
+							}
+						}
+					}
+					
 					countConsecutive = 0;
 					openEnds = 1;
 				} else if (Main.bwr[x][y] == 0) // 빈 점이 그냥 등장할 경우
 					openEnds = 1;
 				else if (countConsecutive > 0) { // 연속점이 다른 돌에 만나서 끝났을 경우
-					score= connect6ShapeScore(countConsecutive, openEnds, 0); // currentTurn is black
+					score= connect6ShapeScoreBlack(countConsecutive, openEnds, 0); // currentTurn is black
 					resultB[x][y]+=score;
 					countConsecutive = 0;
 					openEnds = 0;
@@ -943,7 +1217,7 @@ public class Board extends JPanel implements MouseListener, MouseMotionListener 
 					openEnds = 0;
 			}
 			if (countConsecutive > 0) // 연속점이 벽에 만나서 끝났을 경우
-				score = connect6ShapeScore(countConsecutive, openEnds, 0); // currentTurn is black
+				score = connect6ShapeScoreBlack(countConsecutive, openEnds, 0); // currentTurn is black
 			//resultArr[x][y]+=score;
 			countConsecutive = 0;
 			openEnds = 0;
@@ -954,7 +1228,7 @@ public class Board extends JPanel implements MouseListener, MouseMotionListener 
 	}
 
 	//computer = white인 경우 대각선 검사
-	public int[][] analyzeLeftDiagonalSetsForBlack(int current_turn) {
+	public int[][] analyzeLeftDiagonalSetsForBlack() {
 		double score = 0;
 		int countConsecutive = 0;
 		int openEnds = 0;
@@ -968,24 +1242,80 @@ public class Board extends JPanel implements MouseListener, MouseMotionListener 
 				lb = -i;
 			ub = -lb;
 
+			
+			//left to right bottom
 			for (int diff = lb; diff <= ub; diff += 2) {
 				int x = (i + diff) >> 1;
 				int y = 18 - i + x;
+				//System.out.println("X: "+x+"Y: " +y);
 
 				if (Main.b[x][y] == 1){ // 돌이 검정색이 되면 연속점 1증가
 					countConsecutive++;
+					if(countConsecutive==1) {
+						if((x-1>0)&&(y-1>0)&&(Main.bwr[x-1][y-1] == 0)) {
+							openEnds=1;
+						}else {
+							openEnds=0;
+						}
+					}
+					
 					resultB[x][y]=Integer.MIN_VALUE;
 				}
+				
 				else if (Main.bwr[x][y] == 0 && countConsecutive > 0) { // 연속점이 다른 돌에 만나서 끝났을 경우
 					openEnds++;
-					score = connect6ShapeScore(countConsecutive, openEnds, 0); // currentTurn is black
+					score = connect6ShapeScoreBlack(countConsecutive, openEnds, 0); // currentTurn is black
 					resultB[x][y]+=score;
+				
+					//한 자리가 비어있고 연속된 경우
+					if(x+1<19&&y+1<19&&Main.bwr[x+1][y+1]==1&&Main.b[x+1][y+1]==1) {
+						nCount=0;
+						tX=x+1; //범위 설정
+						tY=y+1;
+						int end=(i + ub) >> 1;
+						if(tX<end) {
+							while(tX<19&&tY<19&&Main.bwr[tX][tY]==1&&Main.b[tX][tY]==1) {
+								nCount++;
+								tX++;
+								tY++;
+							}
+							if(tX+1<19&&tY+1<19&&(nCount+countConsecutive==3)&&(Main.bwr[tX][tY]==0)&&(Main.bwr[tX+1][tY+1]==1)&&(Main.b[tX+1][tY+1]==1)) {
+								score=connect6ShapeScoreBlack(4, openEnds, 1); // currentTurn is black
+								resultB[x][y]+=score;	
+							}
+							if((nCount+countConsecutive==5)||(nCount+countConsecutive==4)) {
+								score=connect6ShapeScoreBlack(countConsecutive+nCount, openEnds, 1); // currentTurn is black
+								resultB[x][y]+=score;
+							}
+						}
+					}	
+					
+					//두 자리가 비어있고 연속된 경우
+					if(x+2<19&&y+2<19&&(Main.bwr[x+1][y+1]==0&&Main.b[x+1][y+1]==0)&&(Main.bwr[x+2][y+2]==1&&Main.b[x+2][y+2]==1)) {
+						//두자리가 비어있고 연속된 경우
+						nCount=0;
+						tX=x+2; //범위 설정
+						tY=y+2;
+						int end=(i + ub) >> 1;
+						if(tX<end) {
+							while(tX<19&&tY<19&&(Main.bwr[x+1][y+1] == 0)&& Main.bwr[tX][tY]==1&&Main.b[tX][tY]==1) {
+								nCount++;
+								tX++;
+								tY++;
+							}
+							if(nCount+countConsecutive==4) {
+								score=connect6ShapeScoreBlack(6, openEnds, 1); // currentTurn is black
+								resultB[x][y]+=score;
+							}
+						}
+					}
+				
 					countConsecutive = 0;
 					openEnds = 1;
 				} else if (Main.bwr[x][y] == 0) // 빈 점이 그냥 등장할 경우
 					openEnds = 1;
 				else if (countConsecutive > 0) { // 연속점이 다른 돌에 만나서 끝났을 경우
-					score= connect6ShapeScore(countConsecutive, openEnds, 0); // currentTurn is black
+					score= connect6ShapeScoreBlack(countConsecutive, openEnds, 0); // currentTurn is black
 					resultB[x][y]+=score;
 					countConsecutive = 0;
 					openEnds = 0;
@@ -993,7 +1323,7 @@ public class Board extends JPanel implements MouseListener, MouseMotionListener 
 					openEnds = 0;
 			}
 			if (countConsecutive > 0) // 연속점이 벽에 만나서 끝났을 경우
-				score = connect6ShapeScore(countConsecutive, openEnds, 0); // currentTurn is black
+				score = connect6ShapeScoreBlack(countConsecutive, openEnds, 0); // currentTurn is black
 			//resultArr[x][y]+=score;
 			countConsecutive = 0;
 			openEnds = 0;
@@ -1013,18 +1343,70 @@ public class Board extends JPanel implements MouseListener, MouseMotionListener 
 
 				if (Main.b[x][y] == 1){ // 돌이 검정색이 되면 연속점 1증가
 					countConsecutive++;
+					if(countConsecutive==1) {
+						if((x+1<19)&&(y+1<19)&&(Main.bwr[x+1][y+1] == 0)) {
+							openEnds=1;
+						}else {
+							openEnds=0;
+						}
+					}
+					
 					resultB[x][y]=Integer.MIN_VALUE;
 				}
 				else if (Main.bwr[x][y] == 0 && countConsecutive > 0) { // 연속점이 다른 돌에 만나서 끝났을 경우
 					openEnds++;
-					score = connect6ShapeScore(countConsecutive, openEnds, 0); // currentTurn is black
+					score = connect6ShapeScoreBlack(countConsecutive, openEnds, 0); // currentTurn is black
 					resultB[x][y]+=score;
+					
+					//한 자리가 비어있고 연속된 경우
+					if(x-1>0&&y-1>0&&Main.bwr[x-1][y-1]==1&&Main.b[x-1][y-1]==1) {
+						nCount=0;
+						tX=x-1; //범위 설정
+						tY=y-1;
+						int end=(i + ub) >> 1;
+						if(tX<end) {
+							while(tX>0&&tY>0&&Main.bwr[tX][tY]==1&&Main.b[tX][tY]==1) {
+								nCount++;
+								tX--;
+								tY--;
+							}
+							if(tX-1>0&&tY-1>0&&(nCount+countConsecutive==3)&&(Main.bwr[tX][tY]==0)&&(Main.bwr[tX-1][tY-1]==1)&&(Main.b[tX-1][tY-1]==1)) {
+								score=connect6ShapeScoreBlack(4, openEnds, 1); // currentTurn is black
+								resultB[x][y]+=score;	
+							}
+							if((nCount+countConsecutive==5)||(nCount+countConsecutive==4)) {
+								score=connect6ShapeScoreBlack(countConsecutive+nCount, openEnds, 1); // currentTurn is black
+								resultB[x][y]+=score;
+							}
+						}
+					}	
+					
+					//두 자리가 비어있고 연속된 경우
+					if((x-2>0)&&y-2>0&&(Main.bwr[x-1][y-1]==0&&Main.b[x-1][y-1]==0)&&(Main.bwr[x-2][y-2]==1&&Main.b[x-2][y-2]==1)) {
+						//두자리가 비어있고 연속된 경우
+						nCount=0;
+						tX=x-2; //범위 설정
+						tY=y-2;
+						int end=(i + ub) >> 1;
+						if(tX<end) {
+							while(tX>0&&tY>0&&(Main.bwr[x-1][y-1] == 0)&& Main.bwr[tX][tY]==1&&Main.b[tX][tY]==1) {
+								nCount++;
+								tX--;
+								tY--;
+							}
+							if(nCount+countConsecutive==4) {
+								score=connect6ShapeScoreBlack(6, openEnds, 1); // currentTurn is black
+								resultB[x][y]+=score;
+							}
+						}
+					}
+					
 					countConsecutive = 0;
 					openEnds = 1;
 				} else if (Main.bwr[x][y] == 0) // 빈 점이 그냥 등장할 경우
 					openEnds = 1;
 				else if (countConsecutive > 0) { // 연속점이 다른 돌에 만나서 끝났을 경우
-					score= connect6ShapeScore(countConsecutive, openEnds, 0); // currentTurn is black
+					score= connect6ShapeScoreBlack(countConsecutive, openEnds, 0); // currentTurn is black
 					resultB[x][y]+=score;
 					countConsecutive = 0;
 					openEnds = 0;
@@ -1032,7 +1414,7 @@ public class Board extends JPanel implements MouseListener, MouseMotionListener 
 					openEnds = 0;
 			}
 			if (countConsecutive > 0) // 연속점이 벽에 만나서 끝났을 경우
-				score = connect6ShapeScore(countConsecutive, openEnds,0); // currentTurn is black
+				score = connect6ShapeScoreBlack(countConsecutive, openEnds,0); // currentTurn is black
 			//resultArr[x][y]+=score;
 			countConsecutive = 0;
 			openEnds = 0;
@@ -1048,12 +1430,12 @@ public class Board extends JPanel implements MouseListener, MouseMotionListener 
 			}
 		}
 		
-		analyzeHorizontalSetsForBlack(Main.BLACK);
-		analyzeVerticalSetsForBlack(Main.BLACK);
-		analyzeLeftDiagonalSetsForBlack(Main.BLACK);
-		analyzeRightDiagonalSetsForBlack(Main.BLACK);
+		analyzeHorizontalSetsForBlack();
+		analyzeVerticalSetsForBlack();
+		analyzeLeftDiagonalSetsForBlack();
+		analyzeRightDiagonalSetsForBlack();
 
-		int max =30;
+		int max = 500000;
 		aa =new Point();
 		aa.x=-1;aa.y=-1;
 		for (int i = 0; i < 19; i++) {
@@ -1076,11 +1458,18 @@ public class Board extends JPanel implements MouseListener, MouseMotionListener 
 			}
 		}
 		
-		analyzeHorizontalSetsForBlack(Main.BLACK);
-		analyzeVerticalSetsForBlack(Main.BLACK);
-		analyzeLeftDiagonalSetsForBlack(Main.BLACK);
-		analyzeRightDiagonalSetsForBlack(Main.BLACK);
-
+		analyzeHorizontalSetsForBlack();
+		analyzeVerticalSetsForBlack();
+		analyzeLeftDiagonalSetsForBlack();
+		analyzeRightDiagonalSetsForBlack();
+		
+		System.out.println("This is black");
+		for (int j = 0; j < 19; j++) {
+			for (int i = 0; i < 19; i++) {
+				System.out.print(resultW[i][j]+" ");
+			}
+			System.out.println("");
+		}
 		int max =0;
 		aa =new Point();
 		for (int i = 0; i < 19; i++) {
@@ -1092,24 +1481,33 @@ public class Board extends JPanel implements MouseListener, MouseMotionListener 
 				}
 			}
 		}
+		if(max<5) {
+			compareWhite2();
+		}
+		
+		System.out.println("compare Black2 : aa.x : "+aa.x+" aa.y: "+aa.y+" max: "+max);
 	}
+	
 	public void compareBlackFirst() {
+		//가중치 return받는 곳 
+		
 		for (int i = 0; i < 19; i++) {
 			for (int j = 0; j < 19; j++) {
-				resultB[i][j]=0;
+				resultB[i][j]=0; //가중치 초기화
 			}
 		}
 		
-		analyzeHorizontalSetsForBlack(Main.BLACK);
-		analyzeVerticalSetsForBlack(Main.BLACK);
-		analyzeLeftDiagonalSetsForBlack(Main.BLACK);
-		analyzeRightDiagonalSetsForBlack(Main.BLACK);
+		//흑돌에 대한 가중치 계산
+		analyzeHorizontalSetsForBlack(); 
+		analyzeVerticalSetsForBlack();
+		analyzeLeftDiagonalSetsForBlack();
+		analyzeRightDiagonalSetsForBlack();
 
-		int max =0;
-		aa =new Point();
+		int max = 0;
+		aa = new Point();
 		for (int i = 0; i < 19; i++) {
 			for (int j = 0; j < 19; j++) {
-				if((resultB[i][j]>max)&&Main.bwr[i][j]==0) {
+				if((resultB[i][j]>max)&&(Main.bwr[i][j]==0)) {
 					max=resultB[i][j];
 					aa.x=i;
 					aa.y=j;
@@ -1117,8 +1515,157 @@ public class Board extends JPanel implements MouseListener, MouseMotionListener 
 			}
 		}
 	}
+	//가중치
+	/*public double connect6ShapeScoreWhite(int consecutive, int openEnds, int con) { // shape에 따른 가중치 부여
+		if (openEnds == 0 && consecutive <= 6)
+			return 0;
+		switch (consecutive) {
+		case 6: 
+			switch (openEnds) {
+			case 2:
+				if (Main.count%4==1) { // this.currentTurn
+					return 200000000; //공격
+				}
+				return 50;
+			}
+			
+		case 5:
+			switch (openEnds) {
+			case 1:
+				if (Main.count%4==1) { // this.currentTurn
+					return 200000000; //공격
+				}
+				return 100000000; //공격
+				
+			case 2:
+				if (Main.count%4==1)
+					return 200000000; //공격
+				return 100000000; //공격
+			}
+			
+		case 4:
+			switch (openEnds) {
+			case 1:
+				if (Main.count%4==1){ // this.currentTurn				
+					return 200000000; //공격
+				}
+				return 50;
+			case 2:
+				if (Main.count%4==1){ // this.currentTurn
+					return 200000000; //공격
+				}
+				return 500000;
+			}
+			
+		case 3:
+			switch (openEnds) {
+			case 1:
+				if (Main.count%4==1)
+					return 7;
+				return 5;
+			case 2:
+				if (Main.count%4==1)
+					return 10000;
+				return 50;	
+			}
+			
+		case 2:
+			switch (openEnds) {
+			case 1:
+				return 2;
+			case 2:
+				return 5;
+			}
+			
+		case 1:
+			switch (openEnds) {
+			case 1:
+				return 0.5;
+			case 2:
+				return 1;
+			}
+			
+		default:
+			return 0; // default
+		}
+	}*/
 
-	public int[][] analyzeHorizontalSetsForWhite(int current_turn) {
+	//가중치
+	public double connect6ShapeScoreWhite(int consecutive, int openEnds, int con) { // shape에 따른 가중치 부여
+		if (openEnds == 0 && consecutive <= 6)
+			return 0;
+		switch (consecutive) {
+		case 6: 
+			switch (openEnds) {
+			case 2:
+				if (Main.count%4==1) { // this.currentTurn
+					return 200000000; //공격
+				}
+				return 50;
+			}
+			
+		case 5:
+			switch (openEnds) {
+			case 1:
+				if (Main.count%4==1) { // this.currentTurn
+					return 200000000; //공격
+				}
+				return 100000000; //공격
+				
+			case 2:
+				if (Main.count%4==1)
+					return 200000000; //공격
+				return 100000000; //공격
+			}
+			
+		case 4:
+			switch (openEnds) {
+			case 1:
+				if (Main.count%4==1){ // this.currentTurn				
+					return 200000000; //공격
+				}
+				return 50;
+			case 2:
+				if (Main.count%4==1){ // this.currentTurn
+					return 200000000; //공격
+				}
+				return 500000;
+			}
+			
+		case 3:
+			switch (openEnds) {
+			case 1:
+				if (Main.count%4==1)
+					return 7;
+				return 5;
+			case 2:
+				if (Main.count%4==1)
+					return 10000;
+				return 50;	
+			}
+			
+		case 2:
+			switch (openEnds) {
+			case 1:
+				return 2;
+			case 2:
+				return 5;
+			}
+			
+		case 1:
+			switch (openEnds) {
+			case 1:
+				return 0.5;
+			case 2:
+				return 1;
+			}
+			
+		default:
+			return 0; // default
+		}
+	}
+
+	public int[][] analyzeHorizontalSetsForWhite() {
 		double score = 0;
 		int countConsecutive = 0;
 		int openEnds = 0;
@@ -1127,38 +1674,53 @@ public class Board extends JPanel implements MouseListener, MouseMotionListener 
 			for (int a = 0; a < 19; a++) {
 				if (Main.w[a][i] == 1) { // 돌이 검정색이 되면 연속점 1증가
 					countConsecutive++;
-					resultW[a][i]=Integer.MIN_VALUE;
+					if(countConsecutive==1) {
+						if((a-1>0)&&(Main.bwr[a-1][i] == 0)) {
+							openEnds=1;
+						}else {
+							openEnds=0;
+						}
+					}
+					//resultW[a][i]=Integer.MIN_VALUE;
 				}
 				else if (Main.bwr[a][i] == 0 && countConsecutive > 0) { // 비어있을 경우 연속된 돌이 있을 때,
 					openEnds++;
-					score = connect6ShapeScore(countConsecutive, openEnds, 1); // currentTurn is black
+					score = connect6ShapeScoreWhite(countConsecutive, openEnds, 0); // currentTurn is black
 					resultW[a][i]+=score;
 					
-					//한 자리가 비어있고 연속된 경우
-					nCount=0;
-					tX=a+1;
-					if(tX<19) {
-						while(Main.bwr[tX][i]==1&&Main.w[tX][i]==1) {
-							nCount++;
-							tX++;
-						}
-						if((nCount+countConsecutive==5)||(nCount+countConsecutive==4)) {
-							score=connect6ShapeScore(countConsecutive+nCount, openEnds, 0); // currentTurn is black
-							resultW[a][i]+=score;
+					//한자리가 비어있고 연속된 경우
+					if(a+1<19&&Main.bwr[a+1][i]==1&&Main.w[a+1][i]==1) {
+						nCount=0;
+						tX=a+1; //범위 설정
+						if(tX<19) {
+							while(tX<19&&Main.bwr[tX][i]==1&&Main.w[tX][i]==1) {
+								nCount++;
+								tX++;
+							}
+							if(tX+1<19&&(nCount+countConsecutive==3)&&(Main.bwr[tX][i]==0)&&(Main.bwr[tX+1][i]==1)&&(Main.w[tX+1][i]==1)) {
+								score=connect6ShapeScoreWhite(4, openEnds, 1); // currentTurn is black
+								resultB[a][i]+=score;	
+							}
+							if((nCount+countConsecutive==5)||(nCount+countConsecutive==4)) {
+								score=connect6ShapeScoreWhite(countConsecutive+nCount, openEnds, 1); // currentTurn is black
+								resultW[a][i]+=score;	
+							}
 						}
 					}
-					
-					//두자리가 비어있고 연속된 경우
-					nCount=0;
-					tX=a+2;
-					if(tX<19) {
-						while((Main.bwr[a+1][i] == 0)&& Main.bwr[tX][i]==1&&Main.w[tX][i]==1) {
-							nCount++;
-							tX++;
-						}
-						if(nCount+countConsecutive==6) {
-							score=connect6ShapeScore(countConsecutive+nCount, openEnds, 0); // currentTurn is black
-							resultW[a][i]+=score;
+					if(a+2<19&&(Main.bwr[a+1][i]==0&&Main.w[a+1][i]==0)&&(Main.bwr[a+2][i]==1&&Main.w[a+2][i]==1)) {
+						//두자리가 비어있고 연속된 경우
+						
+						nCount=0;
+						tX=a+2;
+						if(tX<19) {
+							while(tX<19&&(Main.bwr[a+1][i] == 0)&& Main.bwr[tX][i]==1&&Main.w[tX][i]==1) {
+								nCount++;
+								tX++;
+							}
+							if(nCount+countConsecutive==4) {
+								score=connect6ShapeScoreWhite(6, openEnds, 1); // currentTurn is black
+								resultW[a][i]+=score;
+							}
 						}
 					}
 					
@@ -1173,7 +1735,7 @@ public class Board extends JPanel implements MouseListener, MouseMotionListener 
 					 */
 					//countConsecutive = 0;
 					//openEnds = 0;
-					score= connect6ShapeScore(countConsecutive, openEnds, 1); // currentTurn is black
+					score= connect6ShapeScoreWhite(countConsecutive, openEnds, 0); // currentTurn is black
 					resultW[a][i]+=score;
 					countConsecutive = 0;
 					openEnds = 0;
@@ -1193,38 +1755,53 @@ public class Board extends JPanel implements MouseListener, MouseMotionListener 
 			for (int a = 18; a >=0; a--) {
 				if (Main.w[a][i] == 1) { // 돌이 검정색이 되면 연속점 1증가
 					countConsecutive++;
-					resultW[a][i]=Integer.MIN_VALUE;
+					if(countConsecutive==1) {
+						if((a+1<19)&&(Main.bwr[a+1][i] == 0)) {
+							openEnds=1;
+						}else {
+							openEnds=0;
+						}
+					}
+					//resultW[a][i]=Integer.MIN_VALUE;
 				}
 				else if (Main.bwr[a][i] == 0 && countConsecutive > 0) { // 비어있을 경우 연속된 돌이 있을 때,
 					openEnds++;
-					score = connect6ShapeScore(countConsecutive, openEnds, 1); // currentTurn is black
+					score = connect6ShapeScoreWhite(countConsecutive, openEnds, 0); // currentTurn is black
 					resultW[a][i]+=score;
-					
-					//한 자리가 비어있고 연속된 경우
-					nCount=0;
-					tX=a-1;
-					if(tX>0) {
-						while(Main.bwr[tX][i]==1&&Main.w[tX][i]==1) {
-							nCount++;
-							tX--;
-						}
-						if((nCount+countConsecutive==5)||(nCount+countConsecutive==4)) {
-							score=connect6ShapeScore(countConsecutive+nCount, openEnds, 0); // currentTurn is black
-							resultW[a][i]+=score;
+
+					//한자리가 비어있고 연속된 경우
+					if(a-1>0&&Main.bwr[a-1][i]==1&&Main.w[a-1][i]==1) {
+						nCount=0;
+						tX=a-1;
+						if(tX>0) {
+							while(tX>0&&Main.bwr[tX][i]==1&&Main.w[tX][i]==1) {
+								nCount++;
+								tX--;
+							}
+							if(tX-1>0&&(nCount+countConsecutive==3)&&(Main.bwr[tX][i]==0)&&(Main.bwr[tX-1][i]==1)&&(Main.w[tX-1][i]==1)) {
+								score=connect6ShapeScoreWhite(4, openEnds, 1); // currentTurn is black
+								resultB[a][i]+=score;	
+							}
+							if((nCount+countConsecutive==5)||(nCount+countConsecutive==4)) {
+								score=connect6ShapeScoreWhite(countConsecutive+nCount, openEnds, 1); // currentTurn is black
+								resultW[a][i]+=score;
+							}
 						}
 					}
 					
-					//두 자리가 비어있고 연속된 경우
-					nCount=0;
-					tX=a-2;
-					if(tX>1) {
-						while((Main.bwr[a-1][i] == 0)&& Main.bwr[tX][i]==1&&Main.w[tX][i]==1) {
-							nCount++;
-							tX--;
-						}
-						if(nCount+countConsecutive==6) {
-							score=connect6ShapeScore(countConsecutive+nCount, openEnds, 0); // currentTurn is black
-							resultW[a][i]+=score;
+					if(a-2>0&&(Main.bwr[a-1][i]==0&&Main.w[a-1][i]==0)&&(Main.bwr[a-2][i]==1&&Main.w[a-2][i]==1)) {
+						//두 자리가 비어있고 연속된 경우
+						nCount=0;
+						tX=a-2;
+						if(tX>1) {
+							while(tX>0&&(Main.bwr[a-1][i] == 0)&& Main.bwr[tX][i]==1&&Main.w[tX][i]==1) {
+								nCount++;
+								tX--;
+							}
+							if(nCount+countConsecutive==4) {
+								score=connect6ShapeScoreWhite(6, openEnds, 1); // currentTurn is black
+								resultW[a][i]+=score;
+							}
 						}
 					}
 					
@@ -1239,7 +1816,7 @@ public class Board extends JPanel implements MouseListener, MouseMotionListener 
 					 */
 					//countConsecutive = 0;
 					//openEnds = 0;
-					score= connect6ShapeScore(countConsecutive, openEnds, 1); // currentTurn is black
+					score= connect6ShapeScoreWhite(countConsecutive, openEnds, 0); // currentTurn is black
 					resultW[a][i]+=score;
 					countConsecutive = 0;
 					openEnds = 0;
@@ -1258,7 +1835,7 @@ public class Board extends JPanel implements MouseListener, MouseMotionListener 
 		return Main.bwr;
 	}
 	//computer = Black인 경우 세로 검사
-	public int[][] analyzeVerticalSetsForWhite(int current_turn) {
+	public int[][] analyzeVerticalSetsForWhite() {
 		double score = 0;
 		int countConsecutive = 0;
 		int openEnds = 0;
@@ -1267,40 +1844,57 @@ public class Board extends JPanel implements MouseListener, MouseMotionListener 
 			for (int i = 0; i < 19; i++) {
 				if (Main.w[a][i] == 1) { // 돌이 검정색이 되면 연속점 1증가
 					countConsecutive++;
-					resultW[a][i]=Integer.MIN_VALUE;
+					if(countConsecutive==1) {
+						if((i-1>0)&&(Main.bwr[a][i-1] == 0)) {
+							openEnds=1;
+						}else {
+							openEnds=0;
+						}
+					}
+					
+					//resultW[a][i]=Integer.MIN_VALUE;
 				}
 				else if (Main.bwr[a][i] == 0 && countConsecutive > 0) {
 					openEnds++;
-					score = connect6ShapeScore(countConsecutive, openEnds, 1); // currentTurn is black
+					score = connect6ShapeScoreWhite(countConsecutive, openEnds, 0); // currentTurn is black
 					resultW[a][i]+=score;
 					
-					//한 자리가 비어있고 연속된 경우
-					nCount=0;
-					tX=i+1;
-					if(tX<19) {
-						while(Main.bwr[a][tX]==1&&Main.w[a][tX]==1) {
-							nCount++;
-							tX++;
-						}
-						if((nCount+countConsecutive==5)||(nCount+countConsecutive==4)) {
-							score=connect6ShapeScore(countConsecutive+nCount, openEnds, 0); // currentTurn is black
-							resultW[a][i]+=score;
-						}
-					}
-					//두 자리가 비어있고 연속된 경우
-					nCount=0;
-					tX=i+2;
-					if(tX>1) {
-						while((Main.bwr[a][i+1] == 0)&& Main.bwr[a][tX]==1&&Main.w[a][tX]==1) {
-							nCount++;
-							tX++;
-						}
-						if(nCount+countConsecutive==6) {
-							score=connect6ShapeScore(countConsecutive+nCount, openEnds, 0); // currentTurn is black
-							resultW[a][i]+=score;
+					//한자리가 비어있고 연속된 경우
+					if(i+1<19&&Main.bwr[a][i+1]==1&&Main.w[a][i+1]==1) {
+						//한 자리가 비어있고 연속된 경우
+						nCount=0;
+						tX=i+1;
+						if(tX<19) {
+							while(tX<19&&Main.bwr[a][tX]==1&&Main.w[a][tX]==1) {
+								nCount++;
+								tX++;
+							}
+							if(tX+1<19&&(nCount+countConsecutive==3)&&(Main.bwr[a][tX]==0)&&(Main.bwr[a][tX+1]==1)&&(Main.w[a][tX+1]==1)) {
+								score=connect6ShapeScoreWhite(4, openEnds, 1); // currentTurn is black
+								resultB[a][i]+=score;	
+							}
+							if((nCount+countConsecutive==5)||(nCount+countConsecutive==4)) {
+								score=connect6ShapeScoreWhite(countConsecutive+nCount, openEnds, 1); // currentTurn is black
+								resultW[a][i]+=score;
+							}
 						}
 					}
 					
+					if(i+2<19&&(Main.bwr[a][i+1]==0&&Main.w[a][i+1]==0)&&(Main.bwr[a][i+2]==1&&Main.w[a][i+2]==1)) {
+						//두 자리가 비어있고 연속된 경우
+						nCount=0;
+						tX=i+2;
+						if(tX<19) {
+							while(tX<19&&(Main.bwr[a][i+1] == 0)&& Main.bwr[a][tX]==1&&Main.w[a][tX]==1) {
+								nCount++;
+								tX++;
+							}
+							if(nCount+countConsecutive==4) {
+								score=connect6ShapeScoreWhite(6, openEnds, 1); // currentTurn is black
+								resultW[a][i]+=score;
+							}
+						}
+					}		
 					
 					countConsecutive = 0;
 					openEnds = 1;
@@ -1313,7 +1907,7 @@ public class Board extends JPanel implements MouseListener, MouseMotionListener 
 					 */
 					//countConsecutive = 0;
 					//openEnds = 0;
-					score = connect6ShapeScore(countConsecutive, openEnds, 1); // currentTurn is black
+					score = connect6ShapeScoreWhite(countConsecutive, openEnds, 0); // currentTurn is black
 					resultW[a][i]+=score;
 					countConsecutive = 0;
 					openEnds = 0;
@@ -1331,39 +1925,56 @@ public class Board extends JPanel implements MouseListener, MouseMotionListener 
 			for (int i = 18; i >=0; i--) {
 				if (Main.w[a][i] == 1) { // 돌이 검정색이 되면 연속점 1증가
 					countConsecutive++;
-					resultW[a][i]=Integer.MIN_VALUE;
+					if(countConsecutive==1) {
+						if((i+1<19)&&(Main.bwr[a][i+1] == 0)) {
+							openEnds=1;
+						}else {
+							openEnds=0;
+						}
+					}
+					//resultW[a][i]=Integer.MIN_VALUE;
 				}
 				else if (Main.bwr[a][i] == 0 && countConsecutive > 0) {
 					openEnds++;
-					score = connect6ShapeScore(countConsecutive, openEnds, 1); // currentTurn is black
-					
-					//한 자리가 비어있고 연속된 경우
-					nCount=0;
-					tX=i+1;
-					if(tX<19) {
-						while(Main.bwr[a][tX]==1&&Main.w[a][tX]==1) {
-							nCount++;
-							tX++;
-						}
-						if((nCount+countConsecutive==5)||(nCount+countConsecutive==4)) {
-							score=connect6ShapeScore(countConsecutive+nCount, openEnds, 0); // currentTurn is black
-						}
-					}
-					
-					//두자리가 비어있고 연속된 경우
-					nCount=0;
-					tX=i-2;
-					if(tX>1) {
-						while((Main.bwr[a][i-1] == 0)&& Main.bwr[a][tX]==1&&Main.w[a][tX]==1) {
-							nCount++;
-							tX--;
-						}
-						if(nCount+countConsecutive==6) {
-							score=connect6ShapeScore(countConsecutive+nCount, openEnds, 0); // currentTurn is black
-						}
-					}
-					
+					score = connect6ShapeScoreWhite(countConsecutive, openEnds, 0); // currentTurn is black
 					resultW[a][i]+=score;
+					
+					//한자리가 비어있고 연속된 경우
+					if(i-1>0&&Main.bwr[a][i-1]==1&&Main.w[a][i-1]==1) {
+						nCount=0;
+						tX=i-1; //범위 설정
+						if(tX>0) {
+							while(tX>0&&Main.bwr[a][tX]==1&&Main.w[a][tX]==1) {
+								nCount++;
+								tX--;
+							}
+							if(tX-1>0&&(nCount+countConsecutive==3)&&(Main.bwr[a][tX]==0)&&(Main.bwr[a][tX-1]==1)&&(Main.w[a][tX-1]==1)) {
+								score=connect6ShapeScoreWhite(4, openEnds, 1); // currentTurn is black
+								resultB[a][i]+=score;	
+							}
+							if((nCount+countConsecutive==5)||(nCount+countConsecutive==4)) {
+								score=connect6ShapeScoreWhite(countConsecutive+nCount, openEnds,1); // currentTurn is black
+								resultW[a][i]+=score;
+								
+							}
+						}
+					}
+					
+					if(i-2>0&&(Main.bwr[a][i-1]==0&&Main.w[a][i-1]==0)&&(Main.bwr[a][i-2]==1&&Main.w[a][i-2]==1)) {
+						//두자리가 비어있고 연속된 경우
+						nCount=0;
+						tX=i-2;
+						if(tX>1) 
+							while(tX>0&&(Main.bwr[a][i-1] == 0)&& Main.bwr[a][tX]==1&&Main.w[a][tX]==1) {
+								nCount++;
+								tX--;
+							}
+							if(nCount+countConsecutive==4) {
+								score=connect6ShapeScoreWhite(6, openEnds, 1); // currentTurn is black
+								resultW[a][i]+=score;
+							}
+					}
+					
 					countConsecutive = 0;
 					openEnds = 1;
 				} else if (Main.bwr[a][i] == 0)
@@ -1375,7 +1986,7 @@ public class Board extends JPanel implements MouseListener, MouseMotionListener 
 					 */
 					//countConsecutive = 0;
 					//openEnds = 0;
-					score = connect6ShapeScore(countConsecutive, openEnds, 1); // currentTurn is black
+					score = connect6ShapeScoreWhite(countConsecutive, openEnds, 0); // currentTurn is black
 					resultW[a][i]+=score;
 					countConsecutive = 0;
 					openEnds = 0;
@@ -1394,7 +2005,7 @@ public class Board extends JPanel implements MouseListener, MouseMotionListener 
 	}
 	
 	//computer = Black인 경우 대각선 검사
-	public int[][] analyzeLeftDiagonalSetsForWhite(int current_turn) {
+	public int[][] analyzeLeftDiagonalSetsForWhite() {
 		double score = 0;
 		int countConsecutive = 0;
 		int openEnds = 0;
@@ -1414,18 +2025,70 @@ public class Board extends JPanel implements MouseListener, MouseMotionListener 
 				//System.out.println("a "+a+" i "+i);
 				if (Main.w[x][y] == 1) { // 돌이 검정색이 되면 연속점 1증가
 					countConsecutive++;
-					resultW[x][y]=Integer.MIN_VALUE;
+					if(countConsecutive==1) {
+						if((x-1>0)&&(y-1>0)&&(Main.bwr[x-1][y-1] == 0)) {
+							openEnds=1;
+						}else {
+							openEnds=0;
+						}
+					}
+					
+					//resultW[x][y]=Integer.MIN_VALUE;
 				}
 				else if (Main.bwr[x][y] == 0 && countConsecutive > 0) { // 연속점이 빈곳을 만나서 끝났을 경우
 					openEnds++;
-					score = connect6ShapeScore(countConsecutive, openEnds, 1); // currentTurn is black
+					score = connect6ShapeScoreWhite(countConsecutive, openEnds, 0); // currentTurn is black
 					resultW[x][y]+=score;
+					
+					//한 자리가 비어있고 연속된 경우
+					if(x+1<19&&y+1<19&&Main.bwr[x+1][y+1]==1&&Main.w[x+1][y+1]==1) {
+						nCount=0;
+						tX=x+1; //범위 설정
+						tY=y+1;
+						int end=(i + ub) >> 1;
+						if(tX<end) {
+							while(tX<19&&tY<19&&Main.bwr[tX][tY]==1&&Main.w[tX][tY]==1) {
+								nCount++;
+								tX++;
+								tY++;
+							}
+							if(tX+1<19&&tY+1<19&&(nCount+countConsecutive==3)&&(Main.bwr[tX][tY]==0)&&(Main.bwr[tX+1][tY+1]==1)&&(Main.w[tX+1][tY+1]==1)) {
+								score=connect6ShapeScoreWhite(4, openEnds, 1); // currentTurn is black
+								resultB[x][y]+=score;	
+							}
+							if((nCount+countConsecutive==5)||(nCount+countConsecutive==4)) {
+								score=connect6ShapeScoreWhite(countConsecutive+nCount, openEnds, 1); // currentTurn is black
+								resultW[x][y]+=score;
+							}
+						}
+					}	
+					
+					//두 자리가 비어있고 연속된 경우
+					if(x+2<19&&y+2<19&&(Main.bwr[x+1][y+1]==0&&Main.w[x+1][y+1]==0)&&(Main.bwr[x+2][y+2]==1&&Main.w[x+2][y+2]==1)) {
+						//두자리가 비어있고 연속된 경우
+						nCount=0;
+						tX=x+2; //범위 설정
+						tY=y+2;
+						int end=(i + ub) >> 1;
+						if(tX<end) {
+							while(tX<19&&tY<19&&(Main.bwr[x+1][y+1] == 0)&& Main.bwr[tX][tY]==1&&Main.w[tX][tY]==1) {
+								nCount++;
+								tX++;
+								tY++;
+							}
+							if(nCount+countConsecutive==4) {
+								score=connect6ShapeScoreWhite(6, openEnds, 1); // currentTurn is black
+								resultW[x][y]+=score;
+							}
+						}
+					}
+					
 					countConsecutive = 0;
 					openEnds = 1;
 				} else if (Main.bwr[x][y] == 0) // 빈 점이 그냥 등장할 경우
 					openEnds = 1;
 				else if (countConsecutive > 0) { // 연속점이 다른 돌에 만나서 끝났을 경우
-					score= connect6ShapeScore(countConsecutive, openEnds, 1); // currentTurn is black
+					score= connect6ShapeScoreWhite(countConsecutive, openEnds,0); // currentTurn is black
 					resultW[x][y]+=score;
 					countConsecutive = 0;
 					openEnds = 0;
@@ -1434,7 +2097,7 @@ public class Board extends JPanel implements MouseListener, MouseMotionListener 
 			}
 			
 			if (countConsecutive > 0) // 연속점이 벽에 만나서 끝났을 경우
-				score = connect6ShapeScore(countConsecutive, openEnds, 0); // currentTurn is black
+				score = connect6ShapeScoreWhite(countConsecutive, openEnds, 0); // currentTurn is black
 			//resultW[x][y]+=score;
 			countConsecutive = 0;
 			openEnds = 0;
@@ -1454,18 +2117,70 @@ public class Board extends JPanel implements MouseListener, MouseMotionListener 
 				//System.out.println("a "+a+" i "+i);
 				if (Main.w[x][y] == 1) { // 돌이 검정색이 되면 연속점 1증가
 					countConsecutive++;
-					resultW[x][y]=Integer.MIN_VALUE;
+					if(countConsecutive==1) {
+						if((x+1<19)&&(y+1<19)&&(Main.bwr[x+1][y+1] == 0)) {
+							openEnds=1;
+						}else {
+							openEnds=0;
+						}
+					}
+					
+					//resultW[x][y]=Integer.MIN_VALUE;
 				}
 				else if (Main.bwr[x][y] == 0 && countConsecutive > 0) { // 연속점이 빈곳을 만나서 끝났을 경우
 					openEnds++;
-					score = connect6ShapeScore(countConsecutive, openEnds, 1); // currentTurn is black
+					score = connect6ShapeScoreWhite(countConsecutive, openEnds, 0); // currentTurn is black
 					resultW[x][y]+=score;
+					
+					//한 자리가 비어있고 연속된 경우
+					if(x-1>0&&y-1>0&&Main.bwr[x-1][y-1]==1&&Main.w[x-1][y-1]==1) {
+						nCount=0;
+						tX=x-1; //범위 설정
+						tY=y-1;
+						int end=(i + ub) >> 1;
+						if(tX<end) {
+							while(tX>0&&tY>0&&Main.bwr[tX][tY]==1&&Main.w[tX][tY]==1) {
+								nCount++;
+								tX--;
+								tY--;
+							}
+							if(tX-1>0&&tX-1>0&&(nCount+countConsecutive==3)&&(Main.bwr[tX][tY]==0)&&(Main.bwr[tX-1][tY-1]==1)&&(Main.w[tX-1][tY-1]==1)) {
+								score=connect6ShapeScoreWhite(4, openEnds, 1); // currentTurn is black
+								resultB[x][y]+=score;	
+							}
+							if((nCount+countConsecutive==5)||(nCount+countConsecutive==4)) {
+								score=connect6ShapeScoreWhite(countConsecutive+nCount, openEnds, 1); // currentTurn is black
+								resultW[x][y]+=score;
+							}
+						}
+					}	
+					
+					//두 자리가 비어있고 연속된 경우
+					if(x-2>0&&y-2>0&&(Main.bwr[x-1][y-1]==0&&Main.w[x-1][y-1]==0)&&(Main.bwr[x-2][y-2]==1&&Main.w[x-2][y-2]==1)) {
+						//두자리가 비어있고 연속된 경우
+						nCount=0;
+						tX=x-2; //범위 설정
+						tY=y-2;
+						int end=(i + ub) >> 1;
+						if(tX<end) {
+							while(tX>0&&tY>0&&(Main.bwr[x-1][y-1] == 0)&& Main.bwr[tX][tY]==1&&Main.w[tX][tY]==1) {
+								nCount++;
+								tX--;
+								tY--;
+							}
+							if(nCount+countConsecutive==4) {
+								score=connect6ShapeScoreWhite(6, openEnds, 1); // currentTurn is black
+								resultW[x][y]+=score;
+							}
+						}
+					}
+					
 					countConsecutive = 0;
 					openEnds = 1;
 				} else if (Main.bwr[x][y] == 0) // 빈 점이 그냥 등장할 경우
 					openEnds = 1;
 				else if (countConsecutive > 0) { // 연속점이 다른 돌에 만나서 끝났을 경우
-					score= connect6ShapeScore(countConsecutive, openEnds, 1); // currentTurn is black
+					score= connect6ShapeScoreWhite(countConsecutive, openEnds, 0); // currentTurn is black
 					resultW[x][y]+=score;
 					countConsecutive = 0;
 					openEnds = 0;
@@ -1474,7 +2189,7 @@ public class Board extends JPanel implements MouseListener, MouseMotionListener 
 			}
 			
 			if (countConsecutive > 0) // 연속점이 벽에 만나서 끝났을 경우
-				score = connect6ShapeScore(countConsecutive, openEnds, 0); // currentTurn is black
+				score = connect6ShapeScoreWhite(countConsecutive, openEnds, 0); // currentTurn is black
 			//resultW[x][y]+=score;
 			countConsecutive = 0;
 			openEnds = 0;
@@ -1484,7 +2199,7 @@ public class Board extends JPanel implements MouseListener, MouseMotionListener 
 	}
 
 	//computer = Black인 경우 대각선 검사
-	public int[][] analyzeRightDiagonalSetsForWhite(int current_turn) {
+	public int[][] analyzeRightDiagonalSetsForWhite() {
 		double score = 0;
 		int countConsecutive = 0;
 		int openEnds = 0;
@@ -1504,18 +2219,69 @@ public class Board extends JPanel implements MouseListener, MouseMotionListener 
 
 				if (Main.w[x][y] == 1){ // 돌이 검정색이 되면 연속점 1증가
 					countConsecutive++;
-					resultW[x][y]=Integer.MIN_VALUE;
+					if(countConsecutive==1) {
+						if((x-1>0)&&(y+1<19)&&(Main.bwr[x-1][y+1] == 0)) {
+							openEnds=1;
+						}else {
+							openEnds=0;
+						}
+					}
+					//resultW[x][y]=Integer.MIN_VALUE;
 				}
 				else if (Main.bwr[x][y] == 0 && countConsecutive > 0) { // 연속점이 다른 돌에 만나서 끝났을 경우
 					openEnds++;
-					score = connect6ShapeScore(countConsecutive, openEnds, 1); // currentTurn is black
+					score = connect6ShapeScoreWhite(countConsecutive, openEnds, 0); // currentTurn is black
 					resultW[x][y]+=score;
+					
+					//한 자리가 비어있고 연속된 경우
+					if(x+1<19&&y-1>0&&Main.bwr[x+1][y-1]==1&&Main.w[x+1][y-1]==1) {
+						nCount=0;
+						tX=x+1; //범위 설정
+						tY=y-1;
+						int end=(i + ub) >> 1;
+						if(tX<end) {
+							while(tX<19&&tY>0&&Main.bwr[tX][tY]==1&&Main.w[tX][tY]==1) {
+								nCount++;
+								tX++;
+								tY--;
+							}
+							if(tX+1<19&&tX-1>0&&(nCount+countConsecutive==3)&&(Main.bwr[tX][tY]==0)&&(Main.bwr[tX+1][tY-1]==1)&&(Main.w[tX+1][tY-1]==1)) {
+								score=connect6ShapeScoreWhite(4, openEnds, 1); // currentTurn is black
+								resultB[x][y]+=score;	
+							}
+							if((nCount+countConsecutive==5)||(nCount+countConsecutive==4)) {
+								score=connect6ShapeScoreWhite(countConsecutive+nCount, openEnds, 1); // currentTurn is black
+								resultW[x][y]+=score;
+							}
+						}
+					}	
+					
+					//두 자리가 비어있고 연속된 경우
+					if(x+2<19&&y-2>0&&(Main.bwr[x+1][y-1]==0&&Main.w[x+1][y-1]==0)&&(Main.bwr[x+2][y-2]==1&&Main.w[x+2][y-2]==1)) {
+						//두자리가 비어있고 연속된 경우
+						nCount=0;
+						tX=x+2; //범위 설정
+						tY=y-2;
+						int end=(i + ub) >> 1;
+						if(tX<end) {
+							while(tX<19&&tY>0&&(Main.bwr[x+1][y-1] == 0)&& Main.bwr[tX][tY]==1&&Main.w[tX][tY]==1) {
+								nCount++;
+								tX++;
+								tY--;
+							}
+							if(nCount+countConsecutive==4) {
+								score=connect6ShapeScoreWhite(6, openEnds, 1); // currentTurn is black
+								resultW[x][y]+=score;
+							}
+						}
+					}
+					
 					countConsecutive = 0;
 					openEnds = 1;
 				} else if (Main.bwr[x][y] == 0) // 빈 점이 그냥 등장할 경우
 					openEnds = 1;
 				else if (countConsecutive > 0) { // 연속점이 다른 돌에 만나서 끝났을 경우
-					score= connect6ShapeScore(countConsecutive, openEnds, 1); // currentTurn is black
+					score= connect6ShapeScoreWhite(countConsecutive, openEnds, 0); // currentTurn is black
 					resultW[x][y]+=score;
 					countConsecutive = 0;
 					openEnds = 0;
@@ -1523,7 +2289,7 @@ public class Board extends JPanel implements MouseListener, MouseMotionListener 
 					openEnds = 0;
 			}
 			if (countConsecutive > 0) // 연속점이 벽에 만나서 끝났을 경우
-				score = connect6ShapeScore(countConsecutive, openEnds, 1); // currentTurn is black
+				score = connect6ShapeScoreWhite(countConsecutive, openEnds, 0); // currentTurn is black
 			//resultW[x][y]+=score;
 			countConsecutive = 0;
 			openEnds = 0;
@@ -1543,18 +2309,70 @@ public class Board extends JPanel implements MouseListener, MouseMotionListener 
 
 				if (Main.w[x][y] == 1){ // 돌이 검정색이 되면 연속점 1증가
 					countConsecutive++;
-					resultW[x][y]=Integer.MIN_VALUE;
+					if(countConsecutive==1) {
+						if((x+1<19)&&(y-1>0)&&(Main.bwr[x+1][y-1] == 0)) {
+							openEnds=1;
+						}else {
+							openEnds=0;
+						}
+					}
+					
+					//resultW[x][y]=Integer.MIN_VALUE;
 				}
 				else if (Main.bwr[x][y] == 0 && countConsecutive > 0) { // 연속점이 다른 돌에 만나서 끝났을 경우
 					openEnds++;
-					score = connect6ShapeScore(countConsecutive, openEnds, 1); // currentTurn is black
+					score = connect6ShapeScoreWhite(countConsecutive, openEnds, 0); // currentTurn is black
 					resultW[x][y]+=score;
+					
+					//한 자리가 비어있고 연속된 경우
+					if(x-1>0&&y+1<19&&Main.bwr[x-1][y+1]==1&&Main.w[x-1][y+1]==1) {
+						nCount=0;
+						tX=x-1; //범위 설정
+						tY=y+1; 
+						int end=(i + ub) >> 1;
+						if(tX<end) {
+							while(tX<19&&tY>0&&Main.bwr[tX][tY]==1&&Main.w[tX][tY]==1) {
+								nCount++;
+								tX--;
+								tY++;
+							}
+							if(tX-1>0&&tY+1<19&&(nCount+countConsecutive==3)&&(Main.bwr[tX][tY]==0)&&(Main.bwr[tX-1][tY+1]==1)&&(Main.w[tX-1][tY+1]==1)) {
+								score=connect6ShapeScoreWhite(4, openEnds, 1); // currentTurn is black
+								resultB[x][y]+=score;	
+							}
+							if((nCount+countConsecutive==5)||(nCount+countConsecutive==4)) {
+								score=connect6ShapeScoreWhite(countConsecutive+nCount, openEnds, 1); // currentTurn is black
+								resultW[x][y]+=score;
+							}
+						}
+					}	
+					
+					//두 자리가 비어있고 연속된 경우
+					if(x-2>0&&y+2<19&&(Main.bwr[x-1][y+1]==0&&Main.w[x-1][y+1]==0)&&(Main.bwr[x-2][y+2]==1&&Main.w[x-2][y+2]==1)) {
+						//두자리가 비어있고 연속된 경우
+						nCount=0;
+						tX=x-2; //범위 설정
+						tY=y+2;
+						int end=(i + ub) >> 1;
+						if(tX<end) {
+							while(tX<19&&tY>0&&(Main.bwr[x-1][y+1] == 0)&& Main.bwr[tX][tY]==1&&Main.b[tX][tY]==1) {
+								nCount++;
+								tX--;
+								tY++;
+							}
+							if(nCount+countConsecutive==4) {
+								score=connect6ShapeScoreWhite(6, openEnds, 1); // currentTurn is black
+								resultW[x][y]+=score;
+							}
+						}
+					}					
+					
 					countConsecutive = 0;
 					openEnds = 1;
 				} else if (Main.bwr[x][y] == 0) // 빈 점이 그냥 등장할 경우
 					openEnds = 1;
 				else if (countConsecutive > 0) { // 연속점이 다른 돌에 만나서 끝났을 경우
-					score= connect6ShapeScore(countConsecutive, openEnds, 1); // currentTurn is black
+					score= connect6ShapeScoreWhite(countConsecutive, openEnds, 0); // currentTurn is black
 					resultW[x][y]+=score;
 					countConsecutive = 0;
 					openEnds = 0;
@@ -1562,7 +2380,7 @@ public class Board extends JPanel implements MouseListener, MouseMotionListener 
 					openEnds = 0;
 			}
 			if (countConsecutive > 0) // 연속점이 벽에 만나서 끝났을 경우
-				score = connect6ShapeScore(countConsecutive, openEnds, 1); // currentTurn is black
+				score = connect6ShapeScoreWhite(countConsecutive, openEnds, 0); // currentTurn is black
 			//resultW[x][y]+=score;
 			countConsecutive = 0;
 			openEnds = 0;
@@ -1578,10 +2396,17 @@ public class Board extends JPanel implements MouseListener, MouseMotionListener 
 			}
 		}
 		
-		analyzeHorizontalSetsForWhite(Main.WHITE);
-		analyzeVerticalSetsForWhite(Main.WHITE);
-		analyzeLeftDiagonalSetsForWhite(Main.WHITE);
-		analyzeRightDiagonalSetsForWhite(Main.WHITE);
+		analyzeHorizontalSetsForWhite();
+		analyzeVerticalSetsForWhite();
+		analyzeLeftDiagonalSetsForWhite();
+		analyzeRightDiagonalSetsForWhite();
+		
+		for (int i = 0; i < 19; i++) {
+			for (int j = 0; j < 19; j++) {
+				System.out.print(resultW[i][j]);
+			}
+			System.out.println("");
+		}
 
 		int max = 0;
 		aa =new Point();
@@ -1596,7 +2421,7 @@ public class Board extends JPanel implements MouseListener, MouseMotionListener 
 		}
 	}
 	
-	// computer = White 일때, 체크 
+	// computer = White 일때, 체크
 	public void compareWhite2() {
 		for (int i = 0; i < 19; i++) {
 			for (int j = 0; j < 19; j++) {
@@ -1604,26 +2429,58 @@ public class Board extends JPanel implements MouseListener, MouseMotionListener 
 			}
 		}
 		
-		analyzeHorizontalSetsForWhite(Main.WHITE);
-		analyzeVerticalSetsForWhite(Main.WHITE);
-		analyzeLeftDiagonalSetsForWhite(Main.WHITE);
-		analyzeRightDiagonalSetsForWhite(Main.WHITE);
+		analyzeHorizontalSetsForWhite();
+		analyzeVerticalSetsForWhite();
+		analyzeLeftDiagonalSetsForWhite();
+		analyzeRightDiagonalSetsForWhite();
+		
+		System.out.println("This is white");
+		for (int j = 0; j < 19; j++) {
+			for (int i = 0; i < 19; i++) {
+				System.out.print(resultW[i][j]+" ");
+			}
+			System.out.println("");
+		}
 
-		int max =30;
-		aa =new Point();
-		aa.x=-1;aa.y=-1;
-		for (int i = 0; i < 19; i++) {
-			for (int j = 0; j < 19; j++) {
-				if((resultW[i][j]>=max)&&Main.bwr[i][j]==0) {
-					max=resultW[i][j];
-					aa.x=i;
-					aa.y=j;
+		if(p==true) {
+			int max = 100000000; //공격
+			aa = new Point();
+			aa.x=-1;aa.y=-1;
+			for (int i = 0; i < 19; i++) {
+				for (int j = 0; j < 19; j++) {
+					if((resultW[i][j]>=max)&&Main.bwr[i][j]==0) {
+						max=resultW[i][j];
+						aa.x=i;
+						aa.y=j;
+						System.out.println("aa.x: "+aa.x+" aa.y: "+aa.y);
+					}
 				}
 			}
+			System.out.println("compareWhite2: "+max+"true1");
+			System.out.println("aa.x: "+aa.x+" aa.y: "+aa.y);
+			
+			if(aa.x==-1&&aa.y==-1) {
+				p=false;
+			}
+		}else {
+			int max = 0; //공격
+			aa = new Point();
+			aa.x=-1;aa.y=-1;
+			for (int i = 0; i < 19; i++) {
+				for (int j = 0; j < 19; j++) {
+					if((resultW[i][j]>=max)&&Main.bwr[i][j]==0) {
+						max=resultW[i][j];
+						aa.x=i;
+						aa.y=j;
+						System.out.println("aa.x: "+aa.x+" aa.y: "+aa.y);
+					}
+				}
+			}
+			System.out.println("compareWhite2: "+max+"false2");
+			System.out.println("aa.x: "+aa.x+" aa.y: "+aa.y);
 		}
-		if(aa.x==-1&&aa.y==-1) {
-			p=false;
-		}
+		
+		
 	}
 	
 	public void firstBlack() { //computer==black 일 떄 , 첫 번째 위치를 지정하는 함수 
